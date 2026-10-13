@@ -36,6 +36,7 @@ class MLTrainingRequest(BaseModel):
     hidden_dim: int = Field(default=32, ge=8, le=128, description="Hidden layer dimension")
     num_layers: int = Field(default=2, ge=1, le=5, description="Number of neural layers")
     random_seed: int = Field(default=42, ge=0, description="Random seed for reproducibility")
+    is_async: bool = Field(default=False, description="Run training as an asynchronous non-blocking job")
 
 
 class MLTrainingResponse(BaseModel):
@@ -56,6 +57,21 @@ class MLTrainingResponse(BaseModel):
     val_loss_history: list[float] = Field(default_factory=list)
     provenance: str = "TRAINED_ML_MODEL"
     warnings: list[str] = Field(default_factory=list)
+
+
+class MLJobStatusResponse(BaseModel):
+    """Status, progress, and result of an asynchronous ML training job."""
+
+    job_id: str
+    model_type: str
+    status: str
+    progress_percent: float = 0.0
+    current_epoch: int = 0
+    total_epochs: int = 0
+    created_at: str
+    result: Optional[MLTrainingResponse] = None
+    error_message: Optional[str] = None
+    cancel_requested: bool = False
 
 
 class MLInferenceRequest(BaseModel):
@@ -81,5 +97,33 @@ class MLInferenceResponse(BaseModel):
     reaction_rate: Optional[list[float]] = None
     mass_balance_residual: Optional[list[float]] = None
     steady_state_C_A: Optional[float] = None
+    uncertainty_lower: Optional[list[float]] = None
+    uncertainty_upper: Optional[list[float]] = None
+    confidence_interval_level: Optional[float] = None
     provenance: str = "ML_PREDICTED"
+    warnings: list[str] = Field(default_factory=list)
+
+
+class MLDatasetPreviewResponse(BaseModel):
+    """Preview of synthetic trajectories and zero-leakage split partitions."""
+
+    total_samples: int
+    total_trajectories: int
+    columns: list[str]
+    sample_rows: list[dict[str, Any]]
+    split_summary: dict[str, Any]
+    parameter_ranges: dict[str, dict[str, float]]
+    provenance: str = "PHASE_08_SYNTHETIC_DATASET"
+
+
+class MLDatasetValidationResponse(BaseModel):
+    """Validation outcome for ML dataset integrity and leakage guards."""
+
+    is_valid: bool
+    total_samples: int
+    total_trajectories: int
+    schema_valid: bool
+    bounds_valid: bool
+    zero_leakage_verified: bool
+    errors: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
