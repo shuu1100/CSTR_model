@@ -1,0 +1,152 @@
+{
+  "audit_version": "1.0",
+  "timestamp": "2026-10-13T02:20:00Z",
+  "datasets": {
+    "cstr_rawdata.npy": {
+      "filename": "cstr_rawdata.npy",
+      "sha256": "9a0ec1115e8b2e947487c2688c924e3f0382a6ee1bfea39e8dd652542ee9c4e9",
+      "size_bytes": 32123648,
+      "shape": [
+        2860,
+        1404
+      ],
+      "dtype": "float64",
+      "min": -30.544517858801214,
+      "max": 566.6622364099203,
+      "mean": 240.09050079064653,
+      "nan_count": 0,
+      "inf_count": 0,
+      "status": "QUARANTINED",
+      "compatibility": {
+        "concentration_modeling": "INCOMPATIBLE (Unknown column semantics, no feature dictionary)",
+        "temperature_modeling": "INCOMPATIBLE (Undocumented signals)",
+        "recommendation": "Quarantine until laboratory source provides semantic column definitions"
+      }
+    },
+    "CSTR_24aug_PRBS_dataset.xlsx": {
+      "filename": "CSTR_24aug_PRBS_dataset.xlsx",
+      "sha256": "0e42ce8af6e05cdcd3c8a39eb1e0d54c9478a9623475d1bc64408e3c23d3d3bd",
+      "size_bytes": 297991,
+      "sheets": [
+        "CSTR Dataset",
+        "Input Plots",
+        "Output plots"
+      ],
+      "sheet_details": {
+        "CSTR Dataset": {
+          "rows": 3132,
+          "columns": [
+            "Unnamed: 0",
+            "PRBS Input Signals (Scaled from Multilevel PRBS to actual values)",
+            "Unnamed: 2",
+            "Unnamed: 3",
+            "Unnamed: 4",
+            "Measure RTD Sensor values",
+            "Unnamed: 6",
+            "Unnamed: 7",
+            "Unnamed: 8"
+          ],
+          "dtypes": {
+            "Unnamed: 0": "object",
+            "PRBS Input Signals (Scaled from Multilevel PRBS to actual values)": "object",
+            "Unnamed: 2": "object",
+            "Unnamed: 3": "object",
+            "Unnamed: 4": "object",
+            "Measure RTD Sensor values": "object",
+            "Unnamed: 6": "object",
+            "Unnamed: 7": "object",
+            "Unnamed: 8": "object"
+          },
+          "nan_counts": {
+            "Unnamed: 0": 0,
+            "PRBS Input Signals (Scaled from Multilevel PRBS to actual values)": 0,
+            "Unnamed: 2": 0,
+            "Unnamed: 3": 0,
+            "Unnamed: 4": 0,
+            "Measure RTD Sensor values": 0,
+            "Unnamed: 6": 0,
+            "Unnamed: 7": 0,
+            "Unnamed: 8": 0
+          },
+          "summary": {
+            "Unnamed: 0": {
+              "count": 3132,
+              "unique": 3132,
+              "top": "Time (s)",
+              "freq": 1
+            },
+            "PRBS Input Signals (Scaled from Multilevel PRBS to actual values)": {
+              "count": 3132,
+              "unique": 6,
+              "top": 220,
+              "freq": 1005
+            },
+            "Unnamed: 2": {
+              "count": 3132,
+              "unique": 6,
+              "top": 0,
+              "freq": 1101
+            },
+            "Unnamed: 3": {
+              "count": 3132,
+              "unique": 6,
+              "top": 0,
+              "freq": 862
+            },
+            "Unnamed: 4": {
+              "count": 3132,
+              "unique": 6,
+              "top": 0,
+              "freq": 855
+            },
+            "Measure RTD Sensor values": {
+              "count": 3132.0,
+              "unique": 535.0,
+              "top": 30.96,
+              "freq": 125.0
+            },
+            "Unnamed: 6": {
+              "count": 3132.0,
+              "unique": 1350.0,
+              "top": 69.82,
+              "freq": 9.0
+            },
+            "Unnamed: 7": {
+              "count": 3132.0,
+              "unique": 827.0,
+              "top": 44.05,
+              "freq": 35.0
+            },
+            "Unnamed: 8": {
+              "count": 3132.0,
+              "unique": 362.0,
+              "top": 30.45,
+              "freq": 65.0
+            }
+          }
+        },
+        "Input Plots": {
+          "rows": 0,
+          "columns": [],
+          "dtypes": {},
+          "nan_counts": {},
+          "summary": {}
+        },
+        "Output plots": {
+          "rows": 0,
+          "columns": [],
+          "dtypes": {},
+          "nan_counts": {},
+          "summary": {}
+        }
+      },
+      "contains_concentration": true,
+      "status": "INSPECTED",
+      "compatibility": {
+        "isothermal_concentration_validation": "INCOMPATIBLE (No concentration measurements present)",
+        "thermal_calibration": "POTENTIALLY COMPATIBLE for Phase 13 (Temperature & jacket dynamics present)",
+        "recommendation": "Preserve in data/raw for Phase 13 thermal model; do not use for Phase 1-12 concentration validation"
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "test_case_id": "STRESS-01-ZERO-INLET",
+    "condition": "C_A_in = 0.0 mol/L",
+    "potential_failure": "Division by zero when calculating conversion X_A = (C_in - C) / C_in (0/0 = NaN).",
+    "handled_status": "HANDLED_SUCCESSFULLY",
+    "solution": "Protected conversion guard: when C_A_in <= 1e-12, conversion returns None / NaN with explicit diagnostic warning instead of raising an unhandled ZeroDivisionError."
+  },
+  {
+    "test_case_id": "STRESS-02-ZERO-ORDER-DEPLETION",
+    "condition": "Order n=0 with k*tau > C_A_in",
+    "potential_failure": "Linear depletion dC_A/dt = -k driving concentration negative (C_A < 0) when reactant is exhausted.",
+    "handled_status": "HANDLED_SUCCESSFULLY",
+    "solution": "Smooth active projection: Reaction rate r_A(C_A) = 0 when C_A <= 0, and dynamic ODE solver clips numerical undershoot to 0.0. Material balance verified closed."
+  },
+  {
+    "test_case_id": "STRESS-03-HIGH-DAMKOHLER-STIFFNESS",
+    "condition": "tau = 80 min, k = 1.80 min^-1 (Da = 144.0)",
+    "potential_failure": "Severe boundary layer stiffness causing explicit fixed-step integrators to diverge or oscillate.",
+    "handled_status": "HANDLED_SUCCESSFULLY",
+    "solution": "Adaptive step size control via SciPy RK45 / Radau with rtol=1e-5, atol=1e-7 resolves sharp initial transient without numerical instability."
+  },
+  {
+    "test_case_id": "STRESS-04-NONPHYSICAL-NEGATIVE-FLOW",
+    "condition": "Q <= 0.0 L/min or V <= 0.0 L",
+    "potential_failure": "Infinite or negative residence time tau causing non-physical negative states or singularities.",
+    "handled_status": "HANDLED_SUCCESSFULLY",
+    "solution": "Input validation gate rejects non-positive V or Q with descriptive ValueError (HTTP 422 in API layer)."
+  },
+  {
+    "test_case_id": "STRESS-05-LEAKAGE-ATTEMPT-TEST-SPLIT",
+    "condition": "User attempts to fit parameters using test partition data",
+    "potential_failure": "Data snooping and test leakage corrupting model validation.",
+    "handled_status": "HANDLED_SUCCESSFULLY",
+    "solution": "Leakage validation gate rejects dataset_split='test' requests immediately with HTTP 422."
+  }
+]
