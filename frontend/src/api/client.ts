@@ -16,8 +16,11 @@ import {
   FitKineticsRequest,
   FitKineticsResponse,
   MLBaselinesBenchmarkResponse,
+  MLDatasetPreviewResponse,
+  MLDatasetValidationResponse,
   MLInferenceRequest,
   MLInferenceResponse,
+  MLJobStatusResponse,
   MLModelCatalogItem,
   MLTrainingRequest,
   MLTrainingResponse,
@@ -168,6 +171,37 @@ export const api = {
       body: JSON.stringify(req),
     });
     return handleResponse<MLInferenceResponse>(res);
+  },
+
+  async getMLDatasetPreview(): Promise<MLDatasetPreviewResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/ml/dataset/preview`);
+    return handleResponse<MLDatasetPreviewResponse>(res);
+  },
+
+  async validateMLDataset(): Promise<MLDatasetValidationResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/ml/dataset/validate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    return handleResponse<MLDatasetValidationResponse>(res);
+  },
+
+  async listMLJobs(): Promise<MLJobStatusResponse[]> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/ml/jobs`);
+    return handleResponse<MLJobStatusResponse[]>(res);
+  },
+
+  async getMLJobStatus(jobId: string): Promise<MLJobStatusResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/ml/jobs/${jobId}`);
+    return handleResponse<MLJobStatusResponse>(res);
+  },
+
+  async cancelMLJob(jobId: string): Promise<{ job_id: string; status: string; message: string }> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/ml/jobs/${jobId}/cancel`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    return handleResponse<{ job_id: string; status: string; message: string }>(res);
   },
 };
 

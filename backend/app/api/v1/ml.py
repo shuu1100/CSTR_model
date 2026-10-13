@@ -419,9 +419,10 @@ def get_ml_dataset_preview() -> MLDatasetPreviewResponse:
         and len(set(val_ids).intersection(set(test_ids))) == 0
     )
 
+    candidate_cols = ["time_min", "V_L", "Q_L_min", "k", "k_nominal", "C_A_in_mol_L", "C_A_0_mol_L", "C_A_clean_mol_L", "C_A_noisy_mol_L"]
     ranges = {
         col: {"min": float(df[col].min()), "max": float(df[col].max())}
-        for col in ["time_min", "V_L", "Q_L_min", "k_nominal", "C_A_in_mol_L", "C_A_0_mol_L", "C_A_mol_L"]
+        for col in candidate_cols
         if col in df.columns
     }
 
@@ -474,9 +475,18 @@ def validate_ml_dataset() -> MLDatasetValidationResponse:
     with open(manifest_path, "r", encoding="utf-8") as f:
         manifest = json.load(f)
 
-    # Required columns check
-    required_cols = ["trajectory_id", "time_min", "V_L", "Q_L_min", "k_nominal", "C_A_in_mol_L", "C_A_0_mol_L", "C_A_mol_L"]
-    missing = [c for c in required_cols if c not in df.columns]
+    # Required columns check: supports both 'k' and 'k_nominal', 'C_A_clean_mol_L' and 'C_A_mol_L'
+    base_cols = ["trajectory_id", "time_min", "V_L", "Q_L_min", "C_A_in_mol_L", "C_A_0_mol_L"]
+    missing = [c for c in base_cols if c not in df.columns]
+
+    k_col = "k" if "k" in df.columns else ("k_nominal" if "k_nominal" in df.columns else None)
+    if not k_col:
+        missing.append("k")
+
+    conc_col = "C_A_clean_mol_L" if "C_A_clean_mol_L" in df.columns else ("C_A_mol_L" if "C_A_mol_L" in df.columns else None)
+    if not conc_col:
+        missing.append("C_A_clean_mol_L")
+
     schema_valid = len(missing) == 0
     if not schema_valid:
         errors.append(f"Missing required columns: {missing}")
@@ -489,9 +499,9 @@ def validate_ml_dataset() -> MLDatasetValidationResponse:
     if "Q_L_min" in df.columns and (df["Q_L_min"] <= 0).any():
         bounds_valid = False
         errors.append("Non-positive flow rate detected (Q <= 0).")
-    if "C_A_mol_L" in df.columns and (df["C_A_mol_L"] < 0).any():
+    if conc_col and (df[conc_col] < 0).any():
         bounds_valid = False
-        errors.append("Negative concentration values detected (C_A < 0).")
+        errors.append(f"Negative concentration values detected in {conc_col}.")
 
     # Split overlap check
     tasks = manifest.get("tasks", {})

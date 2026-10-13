@@ -385,6 +385,7 @@ export interface MLTrainingRequest {
   hidden_dim?: number;
   num_layers?: number;
   random_seed?: number;
+  is_async?: boolean;
 }
 
 export interface MLTrainingResponse {
@@ -403,6 +404,19 @@ export interface MLTrainingResponse {
   val_loss_history: number[];
   provenance: string;
   warnings: string[];
+}
+
+export interface MLJobStatusResponse {
+  job_id: string;
+  model_type: string;
+  status: string;
+  progress_percent: number;
+  current_epoch: number;
+  total_epochs: number;
+  created_at: string;
+  result?: MLTrainingResponse | null;
+  error_message?: string | null;
+  cancel_requested: boolean;
 }
 
 export interface MLInferenceRequest {
@@ -424,6 +438,9 @@ export interface MLInferenceResponse {
   reaction_rate?: number[] | null;
   mass_balance_residual?: number[] | null;
   steady_state_C_A?: number | null;
+  uncertainty_lower?: number[] | null;
+  uncertainty_upper?: number[] | null;
+  confidence_interval_level?: number | null;
   provenance: string;
   warnings: string[];
 }
@@ -436,5 +453,32 @@ export interface MLBaselinesBenchmarkResponse {
   test_metrics: Record<string, Record<string, number>>;
   val_metrics: Record<string, Record<string, number>>;
   provenance: string;
+}
+
+export interface MLDatasetPreviewResponse {
+  total_samples: number;
+  total_trajectories: number;
+  columns: string[];
+  sample_rows: Record<string, any>[];
+  split_summary: {
+    train_trajectories: number;
+    val_trajectories: number;
+    test_trajectories: number;
+    zero_leakage_verified: boolean;
+    split_ratio: string;
+  };
+  parameter_ranges: Record<string, { min: number; max: number }>;
+  provenance: string;
+}
+
+export interface MLDatasetValidationResponse {
+  is_valid: boolean;
+  total_samples: number;
+  total_trajectories: number;
+  schema_valid: boolean;
+  bounds_valid: boolean;
+  zero_leakage_verified: boolean;
+  errors: string[];
+  warnings: string[];
 }
 

@@ -12,10 +12,16 @@ import {
   BarChart2,
   ShieldCheck,
   Flame,
+  Database,
+  CheckCircle2,
+  XCircle,
+  StopCircle,
 } from 'lucide-react';
 import { api, ApiError } from '../api/client';
 import {
   MLBaselinesBenchmarkResponse,
+  MLDatasetPreviewResponse,
+  MLDatasetValidationResponse,
   MLInferenceResponse,
   MLModelCatalogItem,
   MLTrainingResponse,
@@ -23,7 +29,7 @@ import {
 
 export const MachineLearningPage: React.FC = () => {
   // Navigation sub-tabs
-  const [activeView, setActiveView] = useState<'inference' | 'training' | 'benchmark'>('inference');
+  const [activeView, setActiveView] = useState<'inference' | 'training' | 'datasets' | 'benchmark'>('inference');
 
   // Catalog state
   const [catalog, setCatalog] = useState<MLModelCatalogItem[]>([]);
@@ -44,8 +50,16 @@ export const MachineLearningPage: React.FC = () => {
   const [trainLr, setTrainLr] = useState<number>(0.01);
   const [trainHiddenDim, setTrainHiddenDim] = useState<number>(32);
   const [trainSeed, setTrainSeed] = useState<number>(42);
+  const [isAsyncTrain, setIsAsyncTrain] = useState<boolean>(false);
   const [isTraining, setIsTraining] = useState<boolean>(false);
+  const [trainingJobId, setTrainingJobId] = useState<string | null>(null);
   const [trainingResult, setTrainingResult] = useState<MLTrainingResponse | null>(null);
+
+  // Dataset preview state
+  const [datasetPreview, setDatasetPreview] = useState<MLDatasetPreviewResponse | null>(null);
+  const [datasetValidation, setDatasetValidation] = useState<MLDatasetValidationResponse | null>(null);
+  const [isLoadingDataset, setIsLoadingDataset] = useState<boolean>(false);
+  const [isValidatingDataset, setIsValidatingDataset] = useState<boolean>(false);
 
   // Benchmark state
   const [benchmark, setBenchmark] = useState<MLBaselinesBenchmarkResponse | null>(null);
@@ -66,6 +80,8 @@ export const MachineLearningPage: React.FC = () => {
 
     // Load benchmark
     loadBenchmark();
+    // Load dataset preview
+    loadDatasetPreview();
   }, []);
 
   const loadBenchmark = async () => {
@@ -77,6 +93,30 @@ export const MachineLearningPage: React.FC = () => {
       // ignore
     } finally {
       setIsLoadingBenchmark(false);
+    }
+  };
+
+  const loadDatasetPreview = async () => {
+    setIsLoadingDataset(true);
+    try {
+      const data = await api.getMLDatasetPreview();
+      setDatasetPreview(data);
+    } catch {
+      // ignore
+    } finally {
+      setIsLoadingDataset(false);
+    }
+  };
+
+  const handleValidateDataset = async () => {
+    setIsValidatingDataset(true);
+    try {
+      const res = await api.validateMLDataset();
+      setDatasetValidation(res);
+    } catch (err: any) {
+      setErrorMessage('Failed to validate synthetic dataset.');
+    } finally {
+      setIsValidatingDataset(false);
     }
   };
 
@@ -117,16 +157,49 @@ export const MachineLearningPage: React.FC = () => {
         learning_rate: trainLr,
         hidden_dim: trainHiddenDim,
         random_seed: trainSeed,
+        is_async: isAsyncTrain,
       });
-      setTrainingResult(res);
+      setTrainingJobId(res.job_id);
+      if (res.status === 'running') {
+        // Poll for completion
+        const timer = setInterval(async () => {
+          try {
+            const status = await api.getMLJobStatus(res.job_id);
+            if (status.status === 'completed' && status.result) {
+              setTrainingResult(status.result);
+              setIsTraining(false);
+              clearInterval(timer);
+            } else if (status.status === 'failed' || status.status === 'cancelled') {
+              setErrorMessage(status.error_message || `Training ${status.status}.`);
+              setIsTraining(false);
+              clearInterval(timer);
+            }
+          } catch {
+            clearInterval(timer);
+            setIsTraining(false);
+          }
+        }, 1500);
+      } else {
+        setTrainingResult(res);
+        setIsTraining(false);
+      }
     } catch (err: any) {
       if (err instanceof ApiError) {
         setErrorMessage(err.message);
       } else {
         setErrorMessage('Training routine failed.');
       }
-    } finally {
       setIsTraining(false);
+    }
+  };
+
+  const handleCancelTraining = async () => {
+    if (!trainingJobId) return;
+    try {
+      await api.cancelMLJob(trainingJobId);
+      setIsTraining(false);
+    } catch {
+      // ignore
     }
   };
 
@@ -174,6 +247,17 @@ export const MachineLearningPage: React.FC = () => {
             Training Studio
           </button>
           <button
+            onClick={() => setActiveView('datasets')}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
+              activeView === 'datasets'
+                ? 'bg-indigo-600 text-white shadow'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Database className="w-4 h-4" />
+            Datasets & Splits
+          </button>
+          <button
             onClick={() => setActiveView('benchmark')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
               activeView === 'benchmark'
@@ -182,7 +266,7 @@ export const MachineLearningPage: React.FC = () => {
             }`}
           >
             <BarChart2 className="w-4 h-4" />
-            Locked Test Leaderboard
+            Locked Test Holdout
           </button>
         </div>
       </div>
@@ -318,34 +402,28 @@ export const MachineLearningPage: React.FC = () => {
               {isInferring ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
-                  Simulating Trajectory...
+                  Simulating Dynamic Field...
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  Run Neural Forecast
+                  Forecast Trajectory
                 </>
               )}
             </button>
 
-            {/* Provenance Card */}
-            {inferenceResult && (
-              <div className="p-3.5 bg-slate-950 border border-slate-800 rounded-xl space-y-2 text-xs">
-                <div className="flex items-center justify-between text-slate-400">
-                  <span>Provenance:</span>
-                  <span className="font-mono text-indigo-400 font-bold">{inferenceResult.provenance}</span>
+            {/* Warnings Display */}
+            {inferenceResult && inferenceResult.warnings.length > 0 && (
+              <div className="p-3 bg-amber-950/40 border border-amber-800/60 rounded-xl text-xs space-y-1 text-amber-200">
+                <div className="flex items-center gap-1.5 font-medium text-amber-400">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                  <span>Out-of-Distribution Diagnostics:</span>
                 </div>
-                <div className="flex items-center justify-between text-slate-400">
-                  <span>Predicted SS:</span>
-                  <span className="font-mono text-emerald-400 font-bold">
-                    {inferenceResult.steady_state_C_A?.toFixed(4)} mol/L
-                  </span>
-                </div>
-                {inferenceResult.warnings.length > 0 && (
-                  <div className="mt-2 p-2 bg-amber-950/40 border border-amber-800 rounded text-amber-300 text-[11px]">
-                    {inferenceResult.warnings[0]}
-                  </div>
-                )}
+                {inferenceResult.warnings.map((w, i) => (
+                  <p key={i} className="text-[11px] text-amber-300/90 pl-5">
+                    • {w}
+                  </p>
+                ))}
               </div>
             )}
           </div>
@@ -361,6 +439,21 @@ export const MachineLearningPage: React.FC = () => {
               {inferenceResult ? (
                 <Plot
                   data={[
+                    ...(inferenceResult.uncertainty_lower && inferenceResult.uncertainty_upper
+                      ? [
+                          {
+                            x: [...inferenceResult.t, ...inferenceResult.t.slice().reverse()],
+                            y: [...inferenceResult.uncertainty_upper, ...inferenceResult.uncertainty_lower.slice().reverse()],
+                            fill: 'toself' as const,
+                            fillcolor: 'rgba(99, 102, 241, 0.15)',
+                            line: { color: 'transparent' },
+                            name: '95% Confidence Band',
+                            showlegend: true,
+                            type: 'scatter' as const,
+                            hoverinfo: 'skip' as const,
+                          },
+                        ]
+                      : []),
                     {
                       x: inferenceResult.t,
                       y: inferenceResult.C_A,
@@ -418,10 +511,26 @@ export const MachineLearningPage: React.FC = () => {
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-slate-500 font-mono text-xs space-y-2">
                   <Activity className="w-8 h-8 text-slate-600 animate-pulse" />
-                  <span>Configure operating parameters and click "Run Neural Forecast"</span>
+                  <span>Click "Forecast Trajectory" to generate model predictions</span>
                 </div>
               )}
             </div>
+
+            {/* Inference Metadata & Provenance Footer */}
+            {inferenceResult && (
+              <div className="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-400">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-500">Steady State C_A:</span>
+                  <span className="text-white font-bold">{inferenceResult.steady_state_C_A?.toFixed(4)} mol/L</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-500">Provenance:</span>
+                  <span className="text-indigo-400 bg-indigo-950/60 border border-indigo-800/60 px-2 py-0.5 rounded">
+                    {inferenceResult.provenance}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -429,10 +538,11 @@ export const MachineLearningPage: React.FC = () => {
       {/* VIEW 2: TRAINING STUDIO */}
       {activeView === 'training' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Training Hyperparameters Column */}
           <div className="glass-panel rounded-2xl p-6 shadow-2xl space-y-5">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2">
               <Sliders className="w-4 h-4 text-indigo-400" />
-              Hyperparameter Tuning
+              Tuning Configuration
             </h2>
 
             <div className="space-y-4">
@@ -502,6 +612,20 @@ export const MachineLearningPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* Asynchronous Execution Toggle */}
+              <div className="flex items-center justify-between p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs">
+                <div>
+                  <span className="text-slate-300 font-medium">Asynchronous Worker</span>
+                  <p className="text-[10px] text-slate-500">Non-blocking background job pool</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={isAsyncTrain}
+                  onChange={e => setIsAsyncTrain(e.target.checked)}
+                  className="accent-indigo-500 w-4 h-4 cursor-pointer"
+                />
+              </div>
+
               <div className="p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs space-y-1 text-slate-400">
                 <div className="flex items-center gap-1.5 text-emerald-400 font-medium">
                   <ShieldCheck className="w-4 h-4" />
@@ -512,23 +636,35 @@ export const MachineLearningPage: React.FC = () => {
                 </p>
               </div>
 
-              <button
-                onClick={handleTrainModel}
-                disabled={isTraining}
-                className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/20 disabled:opacity-50 transition-all"
-              >
-                {isTraining ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    Training Neural Net...
-                  </>
-                ) : (
-                  <>
-                    <Flame className="w-4 h-4" />
-                    Train Architecture
-                  </>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleTrainModel}
+                  disabled={isTraining}
+                  className="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/20 disabled:opacity-50 transition-all"
+                >
+                  {isTraining ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Training Architecture...
+                    </>
+                  ) : (
+                    <>
+                      <Flame className="w-4 h-4" />
+                      Train Model
+                    </>
+                  )}
+                </button>
+                {isTraining && (
+                  <button
+                    onClick={handleCancelTraining}
+                    className="px-3 py-2.5 rounded-xl bg-rose-900/80 hover:bg-rose-800 text-rose-200 font-medium text-xs flex items-center gap-1 border border-rose-700"
+                    title="Cancel Training Job"
+                  >
+                    <StopCircle className="w-4 h-4" />
+                    Cancel
+                  </button>
                 )}
-              </button>
+              </div>
             </div>
           </div>
 
@@ -539,36 +675,7 @@ export const MachineLearningPage: React.FC = () => {
               Loss Convergence Progression
             </h2>
 
-            {trainingResult && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                  <span className="text-[10px] font-mono uppercase text-slate-500">Best Val Loss</span>
-                  <div className="text-base font-bold font-mono text-indigo-400">
-                    {trainingResult.best_val_loss?.toExponential(3)}
-                  </div>
-                </div>
-                <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                  <span className="text-[10px] font-mono uppercase text-slate-500">Locked Test RMSE</span>
-                  <div className="text-base font-bold font-mono text-emerald-400">
-                    {trainingResult.test_rmse?.toFixed(4)} mol/L
-                  </div>
-                </div>
-                <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                  <span className="text-[10px] font-mono uppercase text-slate-500">Locked Test R²</span>
-                  <div className="text-base font-bold font-mono text-sky-400">
-                    {trainingResult.test_r2?.toFixed(4) || '—'}
-                  </div>
-                </div>
-                <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                  <span className="text-[10px] font-mono uppercase text-slate-500">C_A &lt; 0 Violations</span>
-                  <div className="text-base font-bold font-mono text-emerald-400">
-                    {trainingResult.negative_conc_count} (0%)
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="flex-1 w-full min-h-[360px] rounded-xl overflow-hidden bg-slate-950 border border-slate-850 p-2">
+            <div className="flex-1 w-full min-h-[340px] rounded-xl overflow-hidden bg-slate-950 border border-slate-850 p-2">
               {trainingResult && trainingResult.train_loss_history.length > 0 ? (
                 <Plot
                   data={[
@@ -616,15 +723,198 @@ export const MachineLearningPage: React.FC = () => {
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-slate-500 font-mono text-xs space-y-2">
                   <TrendingDown className="w-8 h-8 text-slate-600 animate-pulse" />
-                  <span>Configure training settings and click "Train Architecture"</span>
+                  <span>Configure training settings and click "Train Model"</span>
                 </div>
               )}
             </div>
+
+            {/* Validation Metrics vs Mechanistic Baseline */}
+            {trainingResult && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl text-center">
+                  <span className="text-[10px] uppercase font-mono text-slate-400 block">Val Tuning RMSE</span>
+                  <span className="text-base font-bold font-mono text-emerald-400">
+                    {trainingResult.val_rmse ? `${trainingResult.val_rmse.toFixed(4)}` : 'N/A'}
+                  </span>
+                  <span className="text-[9px] text-slate-500 block">mol/L (Tuning)</span>
+                </div>
+                <div className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl text-center">
+                  <span className="text-[10px] uppercase font-mono text-slate-400 block">Test Holdout RMSE</span>
+                  <span className="text-base font-bold font-mono text-indigo-400">
+                    {trainingResult.test_rmse ? `${trainingResult.test_rmse.toFixed(4)}` : 'N/A'}
+                  </span>
+                  <span className="text-[9px] text-slate-500 block">mol/L (Locked)</span>
+                </div>
+                <div className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl text-center">
+                  <span className="text-[10px] uppercase font-mono text-slate-400 block">Mechanistic Baseline</span>
+                  <span className="text-base font-bold font-mono text-amber-400">0.9412</span>
+                  <span className="text-[9px] text-slate-500 block">mol/L (k=0.10)</span>
+                </div>
+                <div className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl text-center">
+                  <span className="text-[10px] uppercase font-mono text-slate-400 block">C_A &lt; 0 Violations</span>
+                  <span className="text-base font-bold font-mono text-emerald-400">
+                    {trainingResult.negative_conc_count}
+                  </span>
+                  <span className="text-[9px] text-slate-500 block">Physical guard</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* VIEW 3: BENCHMARK LEADERBOARD */}
+      {/* VIEW 3: DATASETS & SPLITS PREVIEW */}
+      {activeView === 'datasets' && (
+        <div className="glass-panel rounded-2xl p-6 shadow-2xl space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <h2 className="text-base font-bold text-white flex items-center gap-2">
+                <Database className="w-5 h-5 text-indigo-400" />
+                Phase 8 Synthetic Datasets & Split Partitions
+              </h2>
+              <p className="text-xs text-slate-400 mt-1">
+                Disjoint 70/15/15 trajectory partitions with full feature schema and bounds validation.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleValidateDataset}
+                disabled={isValidatingDataset}
+                className="px-3 py-1.5 rounded-xl border border-emerald-800 bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 text-xs font-mono flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <CheckCircle2 className={`w-3.5 h-3.5 ${isValidatingDataset ? 'animate-spin' : ''}`} />
+                Validate Dataset
+              </button>
+              <button
+                onClick={loadDatasetPreview}
+                disabled={isLoadingDataset}
+                className="px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-mono flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoadingDataset ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
+          </div>
+
+          {/* Validation Status Banner if performed */}
+          {datasetValidation && (
+            <div className={`p-4 rounded-xl border text-xs flex flex-col gap-2 ${
+              datasetValidation.is_valid
+                ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+                : 'bg-rose-950/40 border-rose-800/80 text-rose-300'
+            }`}>
+              <div className="flex items-center gap-2 font-semibold">
+                {datasetValidation.is_valid ? (
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                ) : (
+                  <XCircle className="w-5 h-5 text-rose-400" />
+                )}
+                <span>
+                  {datasetValidation.is_valid
+                    ? 'Dataset Integrity Verified — Schema, Physical Bounds, and Zero-Leakage Confirmed'
+                    : 'Dataset Validation Failed'}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 pt-1 font-mono text-[11px]">
+                <div>• Schema: {datasetValidation.schema_valid ? 'Valid (8 columns)' : 'Invalid'}</div>
+                <div>• Physical Bounds: {datasetValidation.bounds_valid ? 'Valid (V>0, Q>0, C_A>=0)' : 'Violated'}</div>
+                <div>• Zero Leakage: {datasetValidation.zero_leakage_verified ? 'Verified (0 overlap)' : 'Contaminated'}</div>
+              </div>
+            </div>
+          )}
+
+          {datasetPreview ? (
+            <div className="space-y-6">
+              {/* Split Summary Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl">
+                  <span className="text-[10px] uppercase font-mono text-slate-500 block">Train Partition (70%)</span>
+                  <span className="text-xl font-bold font-mono text-white">
+                    {datasetPreview.split_summary.train_trajectories} Trajectories
+                  </span>
+                  <span className="text-[11px] text-slate-400 block mt-1">Used for model fitting</span>
+                </div>
+                <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl">
+                  <span className="text-[10px] uppercase font-mono text-slate-500 block">Val Partition (15%)</span>
+                  <span className="text-xl font-bold font-mono text-emerald-400">
+                    {datasetPreview.split_summary.val_trajectories} Trajectories
+                  </span>
+                  <span className="text-[11px] text-slate-400 block mt-1">Used for hyperparameter tuning</span>
+                </div>
+                <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl">
+                  <span className="text-[10px] uppercase font-mono text-slate-500 block">Test Holdout (15%)</span>
+                  <span className="text-xl font-bold font-mono text-indigo-400">
+                    {datasetPreview.split_summary.test_trajectories} Trajectories
+                  </span>
+                  <span className="text-[11px] text-slate-400 block mt-1">Locked holdout evaluated once</span>
+                </div>
+                <div className="p-4 bg-slate-950/80 border border-slate-800 rounded-xl flex flex-col justify-center">
+                  <div className="flex items-center gap-1.5 text-emerald-400 font-mono text-xs font-semibold">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Zero Leakage</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400 mt-1">Disjoint trajectories guaranteed</span>
+                </div>
+              </div>
+
+              {/* Parameter Min/Max Ranges Table */}
+              <div>
+                <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2">Parameter Domain Coverage</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
+                  {Object.entries(datasetPreview.parameter_ranges).map(([param, r]) => (
+                    <div key={param} className="p-2.5 bg-slate-950/60 border border-slate-850 rounded-lg">
+                      <span className="text-slate-500 text-[10px] block">{param}</span>
+                      <span className="text-slate-200">
+                        [{r.min.toFixed(2)}, {r.max.toFixed(2)}]
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sample Rows Preview Table */}
+              <div>
+                <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2">Sample Trajectory Rows (Preview)</h3>
+                <div className="overflow-x-auto rounded-xl border border-slate-800">
+                  <table className="w-full text-left text-[11px] font-mono">
+                    <thead className="bg-slate-950 text-slate-400 uppercase border-b border-slate-800">
+                      <tr>
+                        <th className="py-2.5 px-3">Trajectory ID</th>
+                        <th className="py-2.5 px-3">Time [min]</th>
+                        <th className="py-2.5 px-3">C_A Clean [mol/L]</th>
+                        <th className="py-2.5 px-3">V [L]</th>
+                        <th className="py-2.5 px-3">Q [L/min]</th>
+                        <th className="py-2.5 px-3">k [min⁻¹]</th>
+                        <th className="py-2.5 px-3">C_in [mol/L]</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-850 bg-slate-950/40 text-slate-300">
+                      {datasetPreview.sample_rows.slice(0, 8).map((row, idx) => (
+                        <tr key={idx}>
+                          <td className="py-2 px-3 text-indigo-400">{row.trajectory_id}</td>
+                          <td className="py-2 px-3">{Number(row.time_min).toFixed(1)}</td>
+                          <td className="py-2 px-3 text-emerald-400">{Number(row.C_A_clean_mol_L ?? row.C_A_mol_L ?? 0).toFixed(4)}</td>
+                          <td className="py-2 px-3">{Number(row.V_L).toFixed(1)}</td>
+                          <td className="py-2 px-3">{Number(row.Q_L_min).toFixed(2)}</td>
+                          <td className="py-2 px-3">{Number(row.k ?? row.k_nominal ?? 0).toFixed(3)}</td>
+                          <td className="py-2 px-3">{Number(row.C_A_in_mol_L).toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="py-12 text-center text-slate-500 font-mono text-xs">
+              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-slate-600" />
+              Loading synthetic dataset preview...
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* VIEW 4: BENCHMARK LEADERBOARD */}
       {activeView === 'benchmark' && (
         <div className="glass-panel rounded-2xl p-6 shadow-2xl space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

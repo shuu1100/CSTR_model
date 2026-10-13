@@ -2,36 +2,51 @@
 
 ## 1. Executive Summary
 
-Phase 11 completes the full integration of machine learning capabilities across the backend REST API and the React frontend dashboard, conforming to `GLOBAL-INSTRUCTIONS.md`, `phase-11-ml-api-training-ui.md`, and the `phase-08A` protocol.
+Phase 11 completes the integration of machine learning capabilities across the FastAPI backend and the React TypeScript frontend dashboard, fulfilling all requirements of `GLOBAL-INSTRUCTIONS.md`, `phase-11-ml-api-training-ui.md`, and the `phase-08A` protocol.
 
 Key features delivered:
-1. **Model Catalog & REST Endpoints:** `/api/v1/ml/models`, `/api/v1/ml/train`, `/api/v1/ml/predict`, and `/api/v1/ml/baselines/benchmark`.
-2. **Interactive ML Frontend Page (`MachineLearningPage.tsx`):** Three integrated workflows:
-   - *Forecast & Inference:* Dynamic trajectory simulations using PyTorch Grey-Box Neural ODE and PINN surrogates.
-   - *Training Studio:* Real-time loss curves, hyperparameter tuning, and zero-leakage validation tracking.
-   - *Locked Test Leaderboard:* Comprehensive metrics comparison across 19 holdout test trajectories.
-3. **Physical Diagnostics & OOD Detection:** Real-time warnings for extreme Damköhler regimes and strict prevention of negative concentration artifacts ($C_A < 0$).
+1. **Model Catalog & REST Endpoints:** Complete API suite for model enumeration, training dispatch, status polling, cancellation, dynamic inference with 95% confidence intervals, and locked test benchmarking.
+2. **Asynchronous Non-Blocking Training Execution:** Integrated in-memory `TrainingJobManager` with thread-pool workers, preventing compute-intensive training jobs from blocking real-time reactor simulations.
+3. **Dataset Preview & Validation Services:** Dedicated endpoints for dataset inspection, 70/15/15 split partition verification, physical bounds enforcement ($V > 0, Q > 0, C_A \ge 0$), and zero-leakage overlap checks.
+4. **Interactive ML Studio (`MachineLearningPage.tsx`):**
+   - *Forecast & Inference:* Dynamic trajectory simulations with learned reaction rates $r_A(t)$ and 95% uncertainty confidence ribbons.
+   - *Training Studio:* Loss curves ($L_{\text{train}}, L_{\text{val}}$), async execution toggle, cancellation controls, and direct validation-vs-mechanistic baseline comparisons.
+   - *Datasets & Splits:* Comprehensive partition summary, domain min/max coverage tables, and real-time schema validation diagnostics.
+   - *Locked Test Leaderboard:* Frozen holdout evaluation across 19 unseen trajectories with strict leakage prevention.
 
 ---
 
-## 2. API Endpoints Overview
+## 2. API Endpoints Specification
 
 | Method | Endpoint | Description | Provenance / Guarantees |
 |---|---|---|---|
 | `GET` | `/api/v1/ml/models` | Lists available neural and baseline model architectures | Catalog metadata with units and input schemas |
-| `GET` | `/api/v1/ml/baselines/benchmark` | Evaluates models across locked test split (19 trajectories) | Zero leakage, disjoint trajectory evaluation |
-| `POST` | `/api/v1/ml/train` | Dispatches online training and hyperparameter optimization | Returns loss history, best epoch, and validation error |
-| `POST` | `/api/v1/ml/predict` | Computes dynamic transient trajectory forecast | Differentiable RK4 / PINN inference with OOD warnings |
+| `GET` | `/api/v1/ml/dataset/preview` | Returns sample rows, feature ranges, and split partitions | 70/15/15 disjoint partitions, zero leakage |
+| `POST` | `/api/v1/ml/dataset/validate` | Validates column schemas, physical bounds, and disjoint splits | Strict non-negative concentration checks |
+| `POST` | `/api/v1/ml/train` | Dispatches model training (synchronously or asynchronously) | Thread-pooled, non-blocking background workers |
+| `GET` | `/api/v1/ml/jobs` | Lists active and completed training jobs | In-memory job state tracking |
+| `GET` | `/api/v1/ml/jobs/{job_id}` | Polls training progress, epochs completed, and loss curves | Real-time status reporting |
+| `POST` | `/api/v1/ml/jobs/{job_id}/cancel` | Requests early cancellation of running training routines | Safe termination token check |
+| `POST` | `/api/v1/ml/predict` | Computes dynamic transient trajectory forecast | 95% confidence intervals and OOD warnings |
+| `GET` | `/api/v1/ml/baselines/benchmark` | Evaluates models across locked test split (19 trajectories) | Frozen holdout leaderboard |
 
 ---
 
-## 3. Frontend Architecture & User Experience
+## 3. Data Governance & Physical Safety
 
-- **Component:** `frontend/src/pages/MachineLearningPage.tsx`
-- **Navigation:** Activated "Neural ODE & PINN" tab in `Header.tsx` and routed in `App.tsx`.
-- **Plotly Visualizations:**
-  - Dynamic trajectory $C_A(t)$ with learned kinetic rate $r_A(t)$ secondary axis.
-  - Multi-curve loss progression showing training loss and validation loss convergence.
-- **Verification:**
-  - `npm test` -> 4 tests passed.
-  - `npm run build` -> Clean production bundle generated (1604 modules transformed, 0 TypeScript errors).
+- **Units Tracking:** All endpoints enforce canonical units: $V$ in L, $Q$ in L/min, $k$ in $\text{min}^{-1}$, $C_A$ in mol/L, $t$ in min.
+- **Physical Projection:** Predicted concentration fields $\hat{C}_A(t)$ are unconditionally projected to $\ge 0\text{ mol/L}$.
+- **Out-Of-Distribution Diagnostics:** Returns automatic warnings when Damköhler numbers indicate extreme kinetic regimes ($\text{Da} < 0.05$ or $\text{Da} > 50.0$).
+- **Uncertainty Bounds:** Returns 95% empirical confidence intervals $[\hat{C}_A - 1.96\sigma, \hat{C}_A + 1.96\sigma]$ for neural dynamic forecasts.
+- **Tuning Separation:** Validation tuning metrics are displayed separately from locked holdout test metrics to preserve evaluation integrity.
+
+---
+
+## 4. Verification & Testing
+
+- **Backend Test Suite:** **222 passed** in `48.27s` across the complete repository ([test_ml_api.py](file:///c:/local_disc_D/CSTR_model/backend/tests/test_ml_api.py) passed 13/13 tests).
+- **Frontend Test Suite:** **4 passed** in `0.68s` ([client.test.ts](file:///c:/local_disc_D/CSTR_model/frontend/src/api/client.test.ts)).
+- **Frontend Production Build:** Clean Vite build (`1604 modules transformed`, 0 TypeScript errors).
+- **Active Dev Services:**
+  - FastAPI Backend: `http://127.0.0.1:8001`
+  - React Vite Frontend: `http://localhost:5173`
