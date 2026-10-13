@@ -482,3 +482,161 @@ export interface MLDatasetValidationResponse {
   warnings: string[];
 }
 
+export interface ThermalSimulationRequest {
+  V: number;
+  Q: number;
+  C_A_in: number;
+  T_in: number;
+  C_A_0?: number;
+  T_0?: number | null;
+  A?: number;
+  Ea?: number;
+  order?: number;
+  delta_H_rxn?: number;
+  UA?: number;
+  V_j?: number;
+  Q_j?: number;
+  T_j_in?: number;
+  isothermal?: boolean;
+  t_final?: number;
+  n_points?: number;
+}
+
+export interface ThermalSimulationResponse {
+  t: number[];
+  C_A: number[];
+  T_reactor: number[];
+  T_jacket: number[];
+  k_T: number[];
+  conversion: number[];
+  heat_generated: number[];
+  heat_removed: number[];
+  steady_state_C_A: number;
+  steady_state_T: number;
+  thermal_runaway_detected: boolean;
+  units?: Record<string, string>;
+  warnings: string[];
+  provenance: string;
+}
+
+export interface PRBSAuditResponse {
+  status: string;
+  filepath: string;
+  row_count: number;
+  column_count: number;
+  dt_seconds: number;
+  time_span_seconds: number;
+  missing_values_count: number;
+  signal_mappings: Record<string, string>;
+  excitation_identifiability: {
+    reactor_temp_range_k: number;
+    jacket_temp_range_k: number;
+    prbs_levels: number;
+    is_sufficiently_excited: boolean;
+  };
+  scientific_governance_notice: string;
+}
+
+export interface PRBSCalibrationResponse {
+  status: string;
+  audit: Record<string, any>;
+  calibrated_parameters: {
+    k_jacket_per_s: number;
+    k_inlet_per_s: number;
+    thermal_bias_k_per_s: number;
+  };
+  validation_metrics: {
+    validation_derivative_rmse_k_per_s: number;
+  };
+  locked_test_metrics: {
+    derivative_rmse_k_per_s: number;
+    derivative_mae_k_per_s: number;
+    derivative_mean_residual_k_per_s: number;
+    temperature_1step_rmse_k: number;
+    temperature_1step_mae_k: number;
+    temperature_mean_residual_k: number;
+    sample_count: number;
+  };
+  scientific_data_governance: {
+    temperature_validated: boolean;
+    concentration_validated: boolean;
+    warning: string;
+  };
+}
+
+export interface HistoryRunItem {
+  id: string;
+  name: string;
+  run_type: string;
+  created_at: string;
+  provenance: string;
+  parameters: Record<string, any>;
+  results_summary: Record<string, any>;
+}
+
+export interface HistoryRunDetail extends HistoryRunItem {
+  schema_version?: string;
+  artifact_ref?: string | null;
+  seed?: number | null;
+  split_id?: string | null;
+  time_series?: {
+    t: number[];
+    C_A: number[];
+    [key: string]: any;
+  } | null;
+  metadata?: Record<string, any>;
+}
+
+export interface CompareRunsResponse {
+  compared_runs_count: number;
+  runs: HistoryRunDetail[];
+}
+
+export interface RetentionResponse {
+  status: string;
+  purged_count: number;
+  message: string;
+}
+
+export interface OptimizationAuditResponse {
+  status: string;
+  benchmark: {
+    model_name: string;
+    n_inferences: number;
+    mean_latency_ms: number;
+    median_latency_ms: number;
+    p95_latency_ms: number;
+    p99_latency_ms: number;
+    throughput_inferences_per_sec: number;
+    parameter_count: number;
+    memory_footprint_kb: number;
+    onnx_available: boolean;
+    onnx_runtime_available: boolean;
+    onnx_decision: string;
+    justification: string;
+  };
+  regime_stability: {
+    regime_name: string;
+    description: string;
+    inputs: Record<string, number>;
+    steady_state_C_A: number;
+    is_finite: boolean;
+    is_non_negative: boolean;
+    atol_tolerance: number;
+    rtol_tolerance: number;
+  }[];
+  all_regimes_finite: boolean;
+  all_regimes_non_negative: boolean;
+  fallback_status: {
+    fallback_engine: string;
+    fallback_operational: boolean;
+    external_binaries_required: boolean;
+  };
+  formal_decision: {
+    decision: string;
+    ship_onnx_runtime: boolean;
+    rationale: string;
+  };
+}
+
+

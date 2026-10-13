@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container": "#e4efff",
+          "surface-container-high": "#daeaff",
+          "primary": "#006194",
+          "on-surface": "#021d33",
+          "surface-variant": "#cfe5ff",
+          "on-error": "#ffffff",
+          "background": "#f7f9ff",
+          "secondary": "#0051d5",
+          "on-error-container": "#93000a",
+          "on-secondary-fixed-variant": "#003ea8",
+          "primary-fixed-dim": "#93ccff",
+          "text-secondary": "#4E657E",
+          "error-container": "#ffdad6",
+          "outline-variant": "#CBD9E8",
+          "status-warning": "#D97706",
+          "on-primary-fixed": "#001d31",
+          "on-tertiary-fixed": "#00201d",
+          "border-grid": "#CBD9E8",
+          "inverse-on-surface": "#e9f1ff",
+          "on-tertiary-container": "#f4fffc",
+          "on-primary-fixed-variant": "#004b73",
+          "canvas-bg": "#F0F5FA",
+          "tertiary-fixed-dim": "#6bd8cb",
+          "primary-fixed": "#cce5ff",
+          "sidebar-bg": "#E2ECF5",
+          "on-secondary": "#ffffff",
+          "surface-container-low": "#F4F8FC",
+          "border-subtle": "#D5E1EE",
+          "surface": "#f7f9ff",
+          "inverse-surface": "#1a3249",
+          "on-primary-container": "#fdfcff",
+          "status-critical": "#DC2626",
+          "tertiary-container": "#008378",
+          "inverse-primary": "#93ccff",
+          "tertiary-fixed": "#89f5e7",
+          "secondary-fixed": "#dbe1ff",
+          "on-tertiary": "#ffffff",
+          "text-primary": "#0F1E2E",
+          "on-primary": "#ffffff",
+          "on-surface-variant": "#4E657E",
+          "primary-container": "#007bb9",
+          "surface-panel-soft": "#F4F8FC",
+          "secondary-container": "#316bf3",
+          "tertiary": "#00685f",
+          "on-tertiary-fixed-variant": "#005049",
+          "on-background": "#021d33",
+          "outline": "#64748B",
+          "surface-dim": "#c4dcfa",
+          "surface-tint": "#006398",
+          "secondary-fixed-dim": "#b4c5ff",
+          "status-success": "#059669",
+          "surface-container-lowest": "#ffffff",
+          "on-secondary-container": "#fefcff",
+          "surface-bright": "#f7f9ff",
+          "error": "#ba1a1a",
+          "on-secondary-fixed": "#00174b",
+          "surface-white": "#FFFFFF",
+          "surface-container-highest": "#cfe5ff"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "margin": "0.75rem",
+          "margin-mobile": "0.5rem",
+          "space-md": "0.75rem",
+          "gutter-sm": "0.25rem",
+          "space-xs": "0.25rem",
+          "gutter": "0.5rem",
+          "space-lg": "1rem",
+          "space-sm": "0.5rem",
+          "space-xl": "1.5rem"
+        },
+        "fontFamily": {
+          "data-display-lg": ["JetBrains Mono"],
+          "data-display-md": ["JetBrains Mono"],
+          "label-caps": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-sm": ["Inter"],
+          "headline-md": ["Inter"],
+          "unit-label": ["JetBrains Mono"],
+          "body-md": ["Inter"],
+          "headline-xl": ["Inter"],
+          "data-mono-sm": ["JetBrains Mono"]
+        },
+        "fontSize": {
+          "data-display-lg": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.02em", "fontWeight": "500"}],
+          "data-display-md": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+          "label-caps": ["10px", {"lineHeight": "12px", "letterSpacing": "0.06em", "fontWeight": "700"}],
+          "headline-lg": ["16px", {"lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "body-sm": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+          "headline-md": ["13px", {"lineHeight": "18px", "letterSpacing": "-0.005em", "fontWeight": "600"}],
+          "unit-label": ["10px", {"lineHeight": "14px", "fontWeight": "400"}],
+          "body-md": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+          "headline-xl": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "data-mono-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}]
+        }
+      }
+    }
+  };
+</script></head><body class="bg-[#F0F5FA] font-body-sm text-body-sm text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-[#E4EDF6] border-r border-[#CBD9E8] z-50 flex flex-col justify-between select-none shadow-[1px_0_4px_rgba(0,0,0,0.03)]"><div class="flex flex-col"><div class="h-14 px-space-md border-b border-[#CBD9E8] flex items-center justify-between bg-[#DAE7F3]"><div class="flex items-center gap-space-sm"><div class="w-7 h-7 rounded border border-[#CBD9E8] flex items-center justify-center bg-white shadow-xs"><span class="material-symbols-outlined text-primary text-[18px]">science</span></div><div><span class="font-headline-md text-headline-md text-on-surface tracking-tight block font-semibold">CSTR Lab</span><span class="font-unit-label text-unit-label text-text-secondary block leading-none">v2.4-SciML</span></div></div><span class="px-space-xs py-0.5 rounded font-label-caps text-label-caps bg-white text-primary border border-[#CBD9E8] shadow-xs uppercase">PROD</span></div><nav class="py-space-sm flex flex-col gap-0.5 px-space-xs" data-active-classes="bg-white text-primary border-l-2 border-primary font-semibold shadow-xs"><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">grid_view</span><span class="font-body-md text-body-md">Overview</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="steady-state" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">balance</span><span class="font-body-md text-body-md">Steady-State Simulator</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded bg-white text-primary border-l-[3px] border-primary shadow-xs font-medium" data-path="dynamic" href="#"><span class="material-symbols-outlined text-[18px] text-primary">timeline</span><span class="font-body-md text-body-md font-semibold text-primary">Dynamic Simulation</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="thermal" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">device_thermostat</span><span class="font-body-md text-body-md">Thermal CSTR</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="sweeps" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">tune</span><span class="font-body-md text-body-md">Parameter Sweeps</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="experiments" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">experiment</span><span class="font-body-md text-body-md">Data &amp; Experiments</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="estimation" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">query_stats</span><span class="font-body-md text-body-md">Parameter Estimation</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="ml" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">hub</span><span class="font-body-md text-body-md">Machine Learning</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="history" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">history</span><span class="font-body-md text-body-md">Run History</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="reports" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">description</span><span class="font-body-md text-body-md">Reports &amp; Exports</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-colors" data-path="status" href="#"><span class="material-symbols-outlined text-[18px] text-[#4E657E]">monitor_heart</span><span class="font-body-md text-body-md">System Status</span></a></nav></div><div class="p-space-sm border-t border-[#CBD9E8] bg-[#DAE7F3] font-data-mono-sm text-data-mono-sm space-y-1.5"><div class="flex items-center justify-between"><span class="text-text-secondary text-[11px]">DAEMON</span><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span><span class="text-[11px] text-on-surface font-medium">127.0.0.1:8000</span></div></div><div class="flex items-center justify-between text-[11px]"><span class="text-text-secondary">LOCAL DB</span><span class="text-primary font-semibold">SYNCED</span></div><div class="flex items-center justify-between text-[11px]"><span class="text-text-secondary">SOLVER</span><span class="text-status-warning font-semibold truncate max-w-[110px]">RK45/Grey-Box</span></div></div></aside><div class="pl-64 min-h-screen flex flex-col bg-[#F0F5FA]"><header class="fixed top-0 left-64 right-0 h-14 bg-white/95 backdrop-blur-sm border-b border-[#D5E1EE] z-40 flex items-center justify-between px-space-md shadow-xs"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs font-data-mono-sm text-data-mono-sm text-on-surface-variant"><span class="text-text-secondary font-medium">WS:</span><span class="text-on-surface font-semibold">Reactor Unit 01</span><span class="text-outline-variant">/</span><span class="text-primary font-semibold">CSTR-Iso-04</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-0.5 rounded bg-[#F4F8FC] border border-[#D5E1EE] font-data-mono-sm text-unit-label text-text-secondary"><span>Core: FastODE 4.2</span><span class="text-outline-variant">|</span><span>Mem: 184MB</span></div><div class="flex items-center gap-1.5 px-space-xs py-0.5 rounded border border-[#D5E1EE] bg-[#F0FDF4] font-data-mono-sm text-unit-label text-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="font-medium">Solvers Verified</span></div></div><div class="flex items-center gap-space-sm"><button class="flex items-center gap-1 px-space-sm py-1.5 rounded bg-primary text-white font-headline-md text-headline-md hover:bg-primary-container transition-colors shadow-xs" type="button"><span class="material-symbols-outlined text-[16px]">add</span><span>New Simulation</span></button><button class="w-8 h-8 rounded border border-[#D5E1EE] bg-white flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-[#F4F8FC] transition-colors shadow-xs" title="Settings" type="button"><span class="material-symbols-outlined text-[18px]">settings</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-[#D5E1EE] ml-space-xs shadow-xs" src="https://lh3.googleusercontent.com/aida/AEtjO1UHzrFjKrN90hJLgyECXbnLfPy1cLk4FnwJ57geKC07vDEKFWPWpTWSS7pwxnGN_dTRGL-aBdphGR_Hds0E9JSXtMukHYDCJYrIGkunz2EoWUPUs2qPmwRlOoSR8Vqr5uyjIKg9513yHZy4faksiTECORGpX-jVkZdFBJxozFQzCLsdRNNsbsx4BCaF_4soR8RoQmL_V1gBQu7jdJjylDnvRejueTGDXBAjb3JhTMuY_6jFGGlkSAKMqQ"/></div></header><main class="relative pt-14 flex-1 w-full px-space-md py-space-md bg-[#F0F5FA]"><div class="flex flex-col w-full gap-space-md">
+<!-- Top Workspace Toolbar -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-white p-space-md rounded-lg border border-[#D5E1EE] shadow-sm">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold">Dynamic Simulation Workspace</span>
+<span class="px-1.5 py-0.5 rounded font-label-caps text-label-caps bg-surface-container text-primary border border-surface-variant font-bold">ODE-RADAU</span>
+</div>
+<p class="font-body-md text-body-md text-text-secondary mt-0.5">Non-steady transient response, step disturbances, and stiff ODE integration</p>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-primary text-white font-headline-md text-headline-md hover:bg-primary-container transition-colors shadow-sm" id="runBtn" type="button">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+<span>Run Simulation</span>
+</button>
+<button class="flex items-center gap-1 px-2.5 py-1.5 rounded bg-[#E4EDF6] text-outline opacity-50 cursor-not-allowed font-headline-md text-headline-md" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">pause</span>
+<span>Pause</span>
+</button>
+<button class="flex items-center gap-1 px-2.5 py-1.5 rounded bg-white text-on-surface hover:text-primary hover:bg-[#F4F8FC] font-headline-md text-headline-md transition-colors border border-[#CBD9E8] shadow-xs" id="resetBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-secondary">restart_alt</span>
+<span>Reset to Initial</span>
+</button>
+<button class="flex items-center gap-1 px-2.5 py-1.5 rounded bg-white text-on-surface hover:text-primary hover:bg-[#F4F8FC] font-headline-md text-headline-md transition-colors border border-[#CBD9E8] shadow-xs" id="snapshotBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-secondary">bookmark</span>
+<span>Save Snapshot</span>
+</button>
+<button class="flex items-center gap-1 px-2.5 py-1.5 rounded bg-white text-on-surface hover:text-primary hover:bg-[#F4F8FC] font-headline-md text-headline-md transition-colors border border-[#CBD9E8] shadow-xs" id="exportBtn" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-secondary">download</span>
+<span>Export (.csv)</span>
+</button>
+</div>
+</div>
+<!-- Main 2-Column Engineering Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-md items-start">
+<!-- Left Configuration Panel (320px equivalent in 12-col: 3 cols at XL) -->
+<div class="xl:col-span-3 flex flex-col gap-space-md bg-white p-space-md rounded-lg border border-[#D5E1EE] shadow-sm">
+<!-- Panel Header -->
+<div class="flex items-center justify-between pb-space-xs border-b border-[#D5E1EE]">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">tune</span>
+<span class="font-headline-md text-headline-md text-on-surface uppercase tracking-wider font-bold">Parameters &amp; Solver</span>
+</div>
+<span class="font-data-mono-sm text-unit-label px-1 py-0.5 rounded bg-[#F0F5FA] text-primary border border-[#D5E1EE] font-semibold">STIFF-OP</span>
+</div>
+<!-- Group 1: Model Configuration -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-caps text-label-caps text-text-secondary">REACTOR SPECIFICATION</span>
+<!-- Volume V -->
+<div class="flex items-center justify-between gap-space-xs bg-[#F7FAFD] px-2 py-1.5 rounded border border-[#D5E1EE] focus-within:border-primary focus-within:bg-white transition-colors">
+<label class="font-body-sm text-body-sm text-on-surface flex items-center gap-1 font-medium">
+<span>Reactor Volume</span>
+<span class="font-data-mono-sm text-unit-label text-text-secondary font-semibold">V</span>
+</label>
+<div class="flex items-center gap-1">
+<input class="w-16 bg-transparent text-right font-data-mono-sm text-data-mono-sm text-on-surface font-semibold focus:outline-none" id="inputV" step="10" type="number" value="500.0"/>
+<span class="font-unit-label text-unit-label text-text-secondary font-medium">L</span>
+</div>
+</div>
+<!-- Flow Rate Q -->
+<div class="flex items-center justify-between gap-space-xs bg-[#F7FAFD] px-2 py-1.5 rounded border border-[#D5E1EE] focus-within:border-primary focus-within:bg-white transition-colors">
+<label class="font-body-sm text-body-sm text-on-surface flex items-center gap-1 font-medium">
+<span>Flow Rate</span>
+<span class="font-data-mono-sm text-unit-label text-text-secondary font-semibold">Q</span>
+</label>
+<div class="flex items-center gap-1">
+<input class="w-16 bg-transparent text-right font-data-mono-sm text-data-mono-sm text-on-surface font-semibold focus:outline-none" id="inputQ" step="1" type="number" value="40.0"/>
+<span class="font-unit-label text-unit-label text-text-secondary font-medium">L/min</span>
+</div>
+</div>
+<!-- Feed Concentration CA,in -->
+<div class="flex items-center justify-between gap-space-xs bg-[#F7FAFD] px-2 py-1.5 rounded border border-[#D5E1EE] focus-within:border-primary focus-within:bg-white transition-colors">
+<label class="font-body-sm text-body-sm text-on-surface flex items-center gap-1 font-medium">
+<span>Feed Conc.</span>
+<span class="font-data-mono-sm text-unit-label text-text-secondary font-semibold">C<sub>A,in</sub></span>
+</label>
+<div class="flex items-center gap-1">
+<input class="w-16 bg-transparent text-right font-data-mono-sm text-data-mono-sm text-on-surface font-semibold focus:outline-none" id="inputCain" step="0.1" type="number" value="1.000"/>
+<span class="font-unit-label text-unit-label text-text-secondary font-medium">mol/L</span>
+</div>
+</div>
+<!-- Reaction Order n toggle -->
+<div class="flex items-center justify-between bg-[#F7FAFD] px-2 py-1.5 rounded border border-[#D5E1EE]">
+<label class="font-body-sm text-body-sm text-on-surface flex items-center gap-1 font-medium">
+<span>Reaction Order</span>
+<span class="font-data-mono-sm text-unit-label text-text-secondary font-semibold">n</span>
+</label>
+<div class="flex gap-1 bg-[#E2ECF5] p-0.5 rounded border border-[#CBD9E8]">
+<button class="px-2 py-0.5 rounded font-data-mono-sm text-unit-label text-text-secondary hover:text-on-surface" type="button">0</button>
+<button class="px-2 py-0.5 rounded font-data-mono-sm text-unit-label bg-primary text-white font-bold shadow-xs" type="button">1</button>
+<button class="px-2 py-0.5 rounded font-data-mono-sm text-unit-label text-text-secondary hover:text-on-surface" type="button">2</button>
+</div>
+</div>
+<!-- Kinetic constant k -->
+<div class="flex items-center justify-between gap-space-xs bg-[#F7FAFD] px-2 py-1.5 rounded border border-[#D5E1EE] focus-within:border-primary focus-within:bg-white transition-colors">
+<label class="font-body-sm text-body-sm text-on-surface flex items-center gap-1 font-medium">
+<span>Rate Constant</span>
+<span class="font-data-mono-sm text-unit-label text-text-secondary font-semibold">k</span>
+</label>
+<div class="flex items-center gap-1">
+<input class="w-16 bg-transparent text-right font-data-mono-sm text-data-mono-sm text-on-surface font-semibold focus:outline-none" id="inputK" step="0.01" type="number" value="0.250"/>
+<span class="font-unit-label text-unit-label text-text-secondary font-medium">min⁻¹</span>
+</div>
+</div>
+<!-- Initial Concentration CA(0) -->
+<div class="flex items-center justify-between gap-space-xs bg-[#F7FAFD] px-2 py-1.5 rounded border border-[#D5E1EE] focus-within:border-primary focus-within:bg-white transition-colors">
+<label class="font-body-sm text-body-sm text-on-surface flex items-center gap-1 font-medium">
+<span>Initial State</span>
+<span class="font-data-mono-sm text-unit-label text-text-secondary font-semibold">C<sub>A</sub>(0)</span>
+</label>
+<div class="flex items-center gap-1">
+<input class="w-16 bg-transparent text-right font-data-mono-sm text-data-mono-sm text-on-surface font-semibold focus:outline-none" id="inputCa0" step="0.05" type="number" value="0.000"/>
+<span class="font-unit-label text-unit-label text-text-secondary font-medium">mol/L</span>
+</div>
+</div>
+</div>
+<!-- Group 2: Step Disturbances -->
+<div class="flex flex-col gap-space-xs pt-space-xs border-t border-[#D5E1EE]">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">DISTURBANCE PROTOCOL</span>
+<span class="px-1.5 py-0.5 rounded font-label-caps text-label-caps text-amber-800 bg-amber-50 border border-amber-200 font-bold">STEP-ON</span>
+</div>
+<div class="bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE] flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<label class="font-body-sm text-body-sm text-on-surface flex items-center gap-1.5 cursor-pointer font-medium">
+<input checked="" class="accent-primary rounded cursor-pointer h-3.5 w-3.5" type="checkbox"/>
+<span>Feed Step Change</span>
+</label>
+<span class="font-data-mono-sm text-unit-label text-primary font-semibold">t = 20.0 min</span>
+</div>
+<div class="flex items-center justify-between text-body-sm bg-white px-2 py-1 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary font-unit-label">Δ C<sub>A,in</sub> amplitude:</span>
+<span class="font-data-mono-sm text-data-mono-sm text-amber-700 font-bold">+0.50 mol/L</span>
+</div>
+</div>
+</div>
+<!-- Group 3: Simulation & Numerical Controls -->
+<div class="flex flex-col gap-space-xs pt-space-xs border-t border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">NUMERICAL INTEGRATION</span>
+<div class="flex items-center justify-between gap-space-xs bg-[#F7FAFD] px-2 py-1.5 rounded border border-[#D5E1EE]">
+<label class="font-body-sm text-body-sm text-on-surface font-medium">Duration t<sub>final</sub></label>
+<div class="flex items-center gap-1">
+<input class="w-16 bg-transparent text-right font-data-mono-sm text-data-mono-sm text-on-surface font-semibold focus:outline-none" type="number" value="60.0"/>
+<span class="font-unit-label text-unit-label text-text-secondary font-medium">min</span>
+</div>
+</div>
+<div class="flex items-center justify-between bg-[#F7FAFD] px-2 py-1.5 rounded border border-[#D5E1EE]">
+<label class="font-body-sm text-body-sm text-on-surface font-medium">Solver</label>
+<select class="bg-white text-on-surface font-data-mono-sm text-unit-label py-0.5 px-1.5 rounded border border-[#D5E1EE] focus:outline-none font-medium">
+<option>RK45 (Dormand-Prince)</option>
+<option selected="">Radau (Implicit Stiff)</option>
+<option>BDF (Multi-Step)</option>
+<option>LSODA (Adaptive)</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-1.5 font-data-mono-sm text-unit-label">
+<div class="bg-[#F7FAFD] px-2 py-1 rounded border border-[#D5E1EE] flex flex-col">
+<span class="text-text-secondary">RelTol:</span>
+<span class="text-on-surface font-semibold">1.0e-06</span>
+</div>
+<div class="bg-[#F7FAFD] px-2 py-1 rounded border border-[#D5E1EE] flex flex-col">
+<span class="text-text-secondary">AbsTol:</span>
+<span class="text-on-surface font-semibold">1.0e-08</span>
+</div>
+</div>
+</div>
+<!-- Group 4: Compact Governing Equation Panel -->
+<div class="bg-[#F7FAFD] p-2.5 rounded border border-[#D5E1EE] flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">GOVERNING ODE</span>
+<span class="font-unit-label text-unit-label px-1 py-0.2 rounded bg-surface-container text-primary font-bold">CSTR 1-PHASE</span>
+</div>
+<div class="bg-white font-data-mono-sm text-unit-label p-2 rounded text-secondary border border-[#D5E1EE] leading-relaxed font-semibold">
+          dC<sub>A</sub>/dt = (Q/V)(C<sub>A,in</sub> - C<sub>A</sub>) - k·C<sub>A</sub><sup>n</sup>
+</div>
+<div class="flex flex-col gap-0.5 font-data-mono-sm text-unit-label pt-1 text-on-surface-variant">
+<div class="flex justify-between">
+<span class="text-text-secondary">C<sub>A,ss(init)</sub>:</span>
+<span class="text-on-surface font-semibold">0.0909 mol/L</span>
+</div>
+<div class="flex justify-between">
+<span class="text-text-secondary">Space Time τ:</span>
+<span class="text-primary font-semibold">12.50 min</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Simulation Viewport (9 cols at XL) -->
+<div class="xl:col-span-9 flex flex-col gap-space-md">
+<!-- Telemetry Status Ribbon -->
+<div class="bg-white border border-[#D5E1EE] rounded-lg p-space-sm flex flex-wrap items-center justify-between gap-space-sm shadow-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="font-headline-md text-headline-md text-primary font-bold">Simulation Completed</span>
+<span class="font-data-mono-sm text-unit-label text-text-secondary">(1201 points in 84ms via Radau IIA)</span>
+</div>
+<!-- Telemetry Chips -->
+<div class="flex flex-wrap items-center gap-space-xs font-data-mono-sm text-unit-label">
+<div class="bg-[#F0F5FA] px-2.5 py-1 rounded border border-[#D5E1EE] flex items-center gap-1.5">
+<span class="text-text-secondary font-medium">FINAL C<sub>A</sub>:</span>
+<span class="text-on-surface font-bold">0.1428 mol/L</span>
+</div>
+<div class="bg-[#EFF8FF] px-2.5 py-1 rounded border border-[#BAE6FD] flex items-center gap-1.5">
+<span class="text-sky-700 font-medium">CONVERSION:</span>
+<span class="text-primary font-bold">85.72%</span>
+</div>
+<div class="bg-[#F0F5FA] px-2.5 py-1 rounded border border-[#D5E1EE] flex items-center gap-1.5">
+<span class="text-text-secondary font-medium">MEAN τ:</span>
+<span class="text-on-surface font-bold">12.50 min</span>
+</div>
+<div class="bg-[#EFF6FF] px-2.5 py-1 rounded border border-[#BFDBFE] flex items-center gap-1.5">
+<span class="text-blue-700 font-medium">STATE:</span>
+<span class="text-secondary font-bold">Stable Node</span>
+</div>
+</div>
+</div>
+<!-- Primary Dynamic Chart Section -->
+<div class="bg-white border border-[#D5E1EE] rounded-lg p-space-md flex flex-col gap-space-sm shadow-sm">
+<!-- Plot Toolbar & Legend -->
+<div class="flex flex-wrap items-center justify-between gap-space-xs pb-space-xs border-b border-[#D5E1EE]">
+<div class="flex items-center gap-space-md">
+<span class="font-headline-md text-headline-md text-on-surface flex items-center gap-1.5 font-bold">
+<span class="material-symbols-outlined text-[18px] text-primary">ssid_chart</span>
+              Transient Concentration Profile C<sub>A</sub>(t)
+            </span>
+<div class="hidden md:flex items-center gap-space-sm font-data-mono-sm text-unit-label">
+<span class="flex items-center gap-1.5 text-on-surface font-medium">
+<span class="w-3 h-1 bg-[#0284C7] rounded inline-block"></span> C<sub>A</sub>(t) Numerical
+              </span>
+<span class="flex items-center gap-1.5 text-secondary font-medium">
+<span class="w-3 h-0.5 border-t-2 border-dashed border-[#0051d5] inline-block"></span> Analytical SS
+              </span>
+<span class="flex items-center gap-1.5 text-text-secondary">
+<span class="w-2.5 h-2 bg-[#93ccff]/40 inline-block border border-[#0284C7]/40"></span> 95% Confidence Band
+              </span>
+</div>
+</div>
+<!-- Interactive Plot Control Tools -->
+<div class="flex items-center gap-1 bg-[#F4F8FC] p-0.5 rounded border border-[#CBD9E8] font-data-mono-sm text-unit-label">
+<button class="px-1.5 py-0.5 rounded hover:bg-white text-on-surface-variant hover:text-on-surface transition-colors" title="Box Zoom" type="button">
+<span class="material-symbols-outlined text-[14px]">zoom_in</span>
+</button>
+<button class="px-1.5 py-0.5 rounded hover:bg-white text-on-surface-variant hover:text-on-surface transition-colors" title="Pan View" type="button">
+<span class="material-symbols-outlined text-[14px]">pan_tool</span>
+</button>
+<button class="px-1.5 py-0.5 rounded hover:bg-white text-on-surface-variant hover:text-on-surface transition-colors" title="Reset Axes" type="button">
+<span class="material-symbols-outlined text-[14px]">fit_screen</span>
+</button>
+<div class="w-px h-3 bg-[#CBD9E8] mx-0.5"></div>
+<button class="px-2 py-0.5 rounded hover:bg-white text-text-secondary hover:text-on-surface transition-colors font-semibold" id="logScaleBtn" type="button">
+              LOG SCALE
+            </button>
+</div>
+</div>
+<!-- Inline SVG Scientific Graph Canvas -->
+<div class="relative w-full h-[360px] bg-white rounded border border-[#D5E1EE] overflow-hidden select-none">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 900 360">
+<defs>
+<lineargradient id="bandGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#93ccff" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#cce5ff" stop-opacity="0.10"></stop>
+</lineargradient>
+<lineargradient id="curveGrad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#0284C7"></stop>
+<stop offset="35%" stop-color="#006194"></stop>
+<stop offset="70%" stop-color="#D97706"></stop>
+<stop offset="100%" stop-color="#0284C7"></stop>
+</lineargradient>
+</defs>
+<!-- Coordinate Grid lines -->
+<!-- Horizontal grids (Y: 0.00 to 0.20 mol/L) -->
+<g stroke="#E2E8F0" stroke-width="1">
+<line x1="60" x2="870" y1="310" y2="310"></line>
+<line x1="60" x2="870" y1="245" y2="245"></line>
+<line x1="60" x2="870" y1="180" y2="180"></line>
+<line x1="60" x2="870" y1="115" y2="115"></line>
+<line x1="60" x2="870" y1="50" y2="50"></line>
+</g>
+<!-- Vertical grids (Time: 0, 10, 20, 30, 40, 50, 60 min) -->
+<g stroke="#E2E8F0" stroke-width="1">
+<line x1="60" x2="60" y1="30" y2="310"></line>
+<line x1="195" x2="195" y1="30" y2="310"></line>
+<line x1="330" x2="330" y1="30" y2="310"></line>
+<line x1="465" x2="465" y1="30" y2="310"></line>
+<line x1="600" x2="600" y1="30" y2="310"></line>
+<line x1="735" x2="735" y1="30" y2="310"></line>
+<line x1="870" x2="870" y1="30" y2="310"></line>
+</g>
+<!-- Y-Axis Labels -->
+<g class="fill-[#4E657E] font-data-mono-sm text-[11px] font-medium" text-anchor="end">
+<text x="52" y="314">0.00</text>
+<text x="52" y="249">0.05</text>
+<text x="52" y="184">0.10</text>
+<text x="52" y="119">0.15</text>
+<text x="52" y="54">0.20</text>
+<text class="fill-on-surface font-unit-label font-bold" text-anchor="start" x="52" y="20">mol/L</text>
+</g>
+<!-- X-Axis Labels -->
+<g class="fill-[#4E657E] font-data-mono-sm text-[11px] font-medium" text-anchor="middle">
+<text x="60" y="332">0</text>
+<text x="195" y="332">10</text>
+<text x="330" y="332">20</text>
+<text x="465" y="332">30</text>
+<text x="600" y="332">40</text>
+<text x="735" y="332">50</text>
+<text x="870" y="332">60</text>
+<text class="fill-on-surface font-unit-label font-bold" x="465" y="350">Time t [min]</text>
+</g>
+<!-- Disturbance Step Indicator at t=20 min (X=330) -->
+<line stroke="#D97706" stroke-dasharray="4 3" stroke-width="1.5" x1="330" x2="330" y1="30" y2="310"></line>
+<rect fill="#FFFBEB" height="22" rx="4" stroke="#FCD34D" width="206" x="334" y="38"></rect>
+<circle cx="344" cy="49" fill="#D97706" r="3.5"></circle>
+<text class="fill-amber-900 font-data-mono-sm text-[10px] font-semibold" x="353" y="53">Feed Step: +0.50 mol/L @ 20m</text>
+<!-- Analytical SS asymptotic lines (Initial SS: 0.091 -> y=192; Post-step SS: 0.143 -> y=124) -->
+<line stroke="#0051d5" stroke-dasharray="3 3" stroke-width="1.5" x1="60" x2="330" y1="192" y2="192"></line>
+<text class="fill-secondary font-unit-label text-[10px] font-bold" x="70" y="186">C_ss1 = 0.0909 mol/L</text>
+<line stroke="#0051d5" stroke-dasharray="3 3" stroke-width="1.5" x1="330" x2="870" y1="124" y2="124"></line>
+<text class="fill-secondary font-unit-label text-[10px] font-bold" x="720" y="118">C_ss2 = 0.1428 mol/L</text>
+<!-- Uncertainty Shaded Band -->
+<path d="M 60,310 
+                     C 120,290 180,205 250,196
+                     C 285,193 310,192 330,192
+                     C 380,185 430,132 500,126
+                     C 580,123 720,122 870,122
+                     L 870,128
+                     C 720,128 580,129 500,132
+                     C 430,138 380,191 330,198
+                     C 310,198 285,199 250,202
+                     C 180,211 120,296 60,310 Z" fill="url(#bandGrad)"></path>
+<!-- Main Dynamic Trajectory Curve -->
+<path d="M 60,310 
+                     C 110,292 165,214 240,198
+                     C 280,194 305,192 330,192
+                     C 375,188 420,136 490,128
+                     C 570,125 710,124 870,124" fill="none" id="trajectoryCurve" stroke="url(#curveGrad)" stroke-linecap="round" stroke-width="2.75"></path>
+<!-- Interactive Cursor Probe point at t=28 min (X=438, Y=145) -->
+<g class="cursor-pointer" transform="translate(438, 145)">
+<circle fill="#006194" r="4.5" stroke="#ffffff" stroke-width="2"></circle>
+<line opacity="0.7" stroke="#006194" stroke-dasharray="2 2" stroke-width="1" x1="0" x2="0" y1="-100" y2="165"></line>
+<rect fill="#ffffff" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.08))" height="36" rx="4" stroke="#007bb9" stroke-width="1.2" width="130" x="8" y="-28"></rect>
+<text class="fill-on-surface font-data-mono-sm text-[10px] font-semibold" x="14" y="-16">t: 28.00 min</text>
+<text class="fill-primary font-data-mono-sm text-[10px] font-bold" x="14" y="-3">C_A: 0.1264 mol/L</text>
+</g>
+</svg>
+</div>
+<!-- Graph Subtext Metrics -->
+<div class="flex items-center justify-between text-text-secondary font-data-mono-sm text-unit-label px-1">
+<span>ODE Formulation: Radau IIA (Order 5 implicit collocation)</span>
+<span class="font-medium">Max Local Truncation Error: ± 4.12 × 10⁻⁷</span>
+</div>
+</div>
+<!-- Secondary Multi-Trace Diagnostic Panel -->
+<div class="bg-white border border-[#D5E1EE] rounded-lg p-space-md flex flex-col gap-space-sm shadow-sm">
+<!-- Tab Selectors -->
+<div class="flex items-center justify-between border-b border-[#D5E1EE] pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1 rounded bg-surface-container text-primary font-headline-md text-headline-md border border-primary/30 font-bold flex items-center gap-1.5 shadow-xs" id="tabPhase" type="button">
+<span class="material-symbols-outlined text-[16px]">rotate_right</span>
+<span>Phase Plane (dC<sub>A</sub>/dt vs C<sub>A</sub>)</span>
+</button>
+<button class="px-space-sm py-1 rounded hover:bg-[#F4F8FC] text-text-secondary hover:text-on-surface font-headline-md text-headline-md transition-colors flex items-center gap-1.5" id="tabRTD" type="button">
+<span class="material-symbols-outlined text-[16px]">timer</span>
+<span>Residence Distribution E(t)</span>
+</button>
+<button class="px-space-sm py-1 rounded hover:bg-[#F4F8FC] text-text-secondary hover:text-on-surface font-headline-md text-headline-md transition-colors flex items-center gap-1.5" id="tabStepSize" type="button">
+<span class="material-symbols-outlined text-[16px]">stacked_line_chart</span>
+<span>Step Sizes (h<sub>n</sub>)</span>
+</button>
+</div>
+<span class="font-data-mono-sm text-unit-label text-emerald-800 font-bold px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200">SYSTEM STABLE • λ = -0.33 min⁻¹</span>
+</div>
+<!-- Tab Content: Phase Plane Trajectory -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-md items-center">
+<!-- Phase Plane Inline SVG Plot -->
+<div class="md:col-span-8 h-48 bg-[#F7FAFD] rounded border border-[#D5E1EE] p-2 relative overflow-hidden">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 500 180">
+<!-- Phase Grid lines -->
+<g stroke="#E2E8F0" stroke-width="1">
+<line x1="40" x2="480" y1="90" y2="90"></line>
+<line x1="40" x2="480" y1="20" y2="20"></line>
+<line x1="40" x2="480" y1="160" y2="160"></line>
+<line x1="40" x2="40" y1="20" y2="160"></line>
+<line x1="260" x2="260" y1="20" y2="160"></line>
+<line x1="480" x2="480" y1="20" y2="160"></line>
+</g>
+<!-- Nullcline / Zero line dCA/dt = 0 -->
+<line stroke="#94A3B8" stroke-dasharray="2 2" stroke-width="1.5" x1="40" x2="480" y1="90" y2="90"></line>
+<text class="fill-[#64748B] font-data-mono-sm text-[9px] font-semibold" x="430" y="84">dC_A/dt = 0</text>
+<!-- Vector field mini arrows -->
+<g fill="none" stroke="#CBD5E1" stroke-width="1">
+<path d="M 100,60 L 120,65 M 117,62 L 120,65 L 117,68"></path>
+<path d="M 180,72 L 200,77 M 197,74 L 200,77 L 197,80"></path>
+<path d="M 280,120 L 300,110 M 297,113 L 300,110 L 297,107"></path>
+<path d="M 380,105 L 400,98 M 397,101 L 400,98 L 397,95"></path>
+</g>
+<!-- Phase Trajectory Segment 1 (Approaching Node 1 at 0.091) -->
+<path d="M 45,40 Q 120,48 200,88" fill="none" stroke="#0284C7" stroke-width="2.25"></path>
+<!-- Attractor Node 1 -->
+<circle cx="200" cy="90" fill="#0284C7" r="4" stroke="#ffffff" stroke-width="1.5"></circle>
+<text class="fill-primary font-data-mono-sm text-[9px] font-bold" x="165" y="106">Node 1 (0.091)</text>
+<!-- Post-Step Trajectory Jump & Convergence to Attractor Node 2 -->
+<path d="M 200,90 C 220,30 280,45 360,89" fill="none" stroke="#D97706" stroke-dasharray="1 0" stroke-width="2.25"></path>
+<!-- Attractor Node 2 (Terminal Steady State) -->
+<circle cx="360" cy="90" fill="#D97706" r="4.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<text class="fill-amber-800 font-data-mono-sm text-[9px] font-bold" x="325" y="106">Attractor Node 2 (0.143)</text>
+<!-- Axes Labels -->
+<text class="fill-[#64748B] font-data-mono-sm text-[9px] font-bold" x="42" y="15">+dC_A/dt</text>
+<text class="fill-[#64748B] font-data-mono-sm text-[9px] font-bold" x="42" y="172">-dC_A/dt</text>
+<text class="fill-[#64748B] font-data-mono-sm text-[9px] font-bold" text-anchor="end" x="475" y="105">C_A →</text>
+</svg>
+</div>
+<!-- Dynamic Eigenvalues and Diagnostics readout -->
+<div class="md:col-span-4 flex flex-col gap-space-xs font-data-mono-sm text-unit-label">
+<div class="bg-[#F7FAFD] p-2.5 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary block font-medium">JACOBIAN EIGENVALUE</span>
+<span class="text-primary text-data-display-md font-bold">λ = -(Q/V + k) = -0.330 min⁻¹</span>
+<span class="text-emerald-700 text-[10px] block mt-0.5 font-semibold">Strictly negative real part (Sink)</span>
+</div>
+<div class="bg-[#F7FAFD] p-2.5 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary block font-medium">STEP RESPONSE OVERSHOOT</span>
+<span class="text-on-surface font-bold">0.00% (Overdamped 1st order)</span>
+</div>
+<div class="bg-[#F7FAFD] p-2.5 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary block font-medium">TIME CONSTANT τ<sub>p</sub></span>
+<span class="text-amber-800 font-bold">3.030 min (with reaction)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Scientific Details Accordion (Default: Expanded) -->
+<details class="group bg-white border border-[#D5E1EE] rounded-lg p-space-md shadow-sm" open="">
+<summary class="flex items-center justify-between cursor-pointer list-none select-none">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-text-secondary text-[18px] group-open:rotate-90 transition-transform">chevron_right</span>
+<span class="font-headline-md text-headline-md text-on-surface font-bold">Scientific &amp; Numerical Integration Notes</span>
+</div>
+<span class="font-data-mono-sm text-unit-label px-2 py-0.5 rounded bg-surface-container text-primary border border-surface-variant font-bold">CONVERGED (TOL: 1e-6)</span>
+</summary>
+<div class="mt-space-md pt-space-md border-t border-[#D5E1EE] text-body-sm text-text-secondary flex flex-col gap-space-xs">
+<p class="leading-relaxed">
+            Stiff ODE integration performed using <span class="text-on-surface font-bold">Radau IIA order 5</span> implicit Runge-Kutta method with adaptive step-size selection based on local error estimate. The reaction-convection balance exhibits a stiff spectral radius near step disturbance boundary at <span class="font-data-mono-sm text-amber-800 font-semibold">t = 20.0 min</span>, triggering 4 refinement sub-steps to preserve monotonic convergence.
+          </p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm pt-space-xs font-data-mono-sm text-unit-label">
+<div class="bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary block">RESIDUAL MASS BALANCE</span>
+<span class="text-primary font-bold">&lt; 1.20 × 10⁻⁷ mol/s</span>
+</div>
+<div class="bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary block">COLLOCATION POINTS</span>
+<span class="text-on-surface font-bold">1,201 discrete mesh nodes</span>
+</div>
+<div class="bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary block">STIFFNESS RATIO</span>
+<span class="text-amber-800 font-bold">S = 14.2 (Moderate Stiffness)</span>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+<script>
+  // Simple interactive controls for CSTR Dynamic Simulation Workspace
+  (function initCSTRWorkspace() {
+    const runBtn = document.getElementById('runBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const trajectoryCurve = document.getElementById('trajectoryCurve');
+    const logScaleBtn = document.getElementById('logScaleBtn');
+    
+    // Toggle Log scale label state
+    if (logScaleBtn) {
+      logScaleBtn.addEventListener('click', () => {
+        const isLog = logScaleBtn.classList.toggle('bg-primary');
+        if (isLog) {
+          logScaleBtn.classList.add('text-white');
+          logScaleBtn.classList.remove('text-text-secondary');
+        } else {
+          logScaleBtn.classList.remove('text-white');
+          logScaleBtn.classList.add('text-text-secondary');
+        }
+      });
+    }
+
+    // Run simulation visual pulse feedback
+    if (runBtn && trajectoryCurve) {
+      runBtn.addEventListener('click', () => {
+        trajectoryCurve.style.transition = 'opacity 0.2s ease, stroke-dashoffset 0.6s ease';
+        trajectoryCurve.style.opacity = '0.3';
+        setTimeout(() => {
+          trajectoryCurve.style.opacity = '1.0';
+        }, 180);
+      });
+    }
+
+    // Reset button feedback
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        const inputV = document.getElementById('inputV');
+        const inputQ = document.getElementById('inputQ');
+        const inputCain = document.getElementById('inputCain');
+        const inputK = document.getElementById('inputK');
+        const inputCa0 = document.getElementById('inputCa0');
+        if (inputV) inputV.value = "500.0";
+        if (inputQ) inputQ.value = "40.0";
+        if (inputCain) inputCain.value = "1.000";
+        if (inputK) inputK.value = "0.250";
+        if (inputCa0) inputCa0.value = "0.000";
+      });
+    }
+  })();
+</script></main></div></body></html>

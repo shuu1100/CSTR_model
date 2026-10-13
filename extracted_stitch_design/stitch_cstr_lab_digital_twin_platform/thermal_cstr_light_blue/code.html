@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container": "#e4efff",
+          "surface-container-high": "#daeaff",
+          "primary": "#006194",
+          "on-surface": "#021d33",
+          "surface-variant": "#cfe5ff",
+          "on-error": "#ffffff",
+          "background": "#f0f5fa",
+          "secondary": "#0051d5",
+          "on-error-container": "#93000a",
+          "on-secondary-fixed-variant": "#003ea8",
+          "primary-fixed-dim": "#93ccff",
+          "text-secondary": "#4E657E",
+          "error-container": "#ffdad6",
+          "outline-variant": "#CBD9E8",
+          "status-warning": "#D97706",
+          "on-primary-fixed": "#001d31",
+          "on-tertiary-fixed": "#00201d",
+          "border-grid": "#CBD9E8",
+          "inverse-on-surface": "#e9f1ff",
+          "on-tertiary-container": "#f4fffc",
+          "on-primary-fixed-variant": "#004b73",
+          "canvas-bg": "#F0F5FA",
+          "tertiary-fixed-dim": "#6bd8cb",
+          "primary-fixed": "#cce5ff",
+          "sidebar-bg": "#E2ECF5",
+          "on-secondary": "#ffffff",
+          "surface-container-low": "#eef4ff",
+          "border-subtle": "#D5E1EE",
+          "surface": "#f0f5fa",
+          "inverse-surface": "#1a3249",
+          "on-primary-container": "#fdfcff",
+          "status-critical": "#DC2626",
+          "tertiary-container": "#008378",
+          "inverse-primary": "#93ccff",
+          "tertiary-fixed": "#89f5e7",
+          "secondary-fixed": "#dbe1ff",
+          "on-tertiary": "#ffffff",
+          "text-primary": "#0F1E2E",
+          "on-primary": "#ffffff",
+          "on-surface-variant": "#4E657E",
+          "primary-container": "#007bb9",
+          "surface-panel-soft": "#F4F8FC",
+          "secondary-container": "#316bf3",
+          "tertiary": "#b45309",
+          "on-tertiary-fixed-variant": "#005049",
+          "on-background": "#021d33",
+          "outline": "#707881",
+          "surface-dim": "#c4dcfa",
+          "surface-tint": "#006398",
+          "secondary-fixed-dim": "#b4c5ff",
+          "status-success": "#059669",
+          "surface-container-lowest": "#ffffff",
+          "on-secondary-container": "#fefcff",
+          "surface-bright": "#f7f9ff",
+          "error": "#ba1a1a",
+          "on-secondary-fixed": "#00174b",
+          "surface-white": "#FFFFFF",
+          "surface-container-highest": "#cfe5ff"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "margin": "0.75rem",
+          "margin-mobile": "0.5rem",
+          "space-md": "0.75rem",
+          "gutter-sm": "0.25rem",
+          "space-xs": "0.25rem",
+          "gutter": "0.5rem",
+          "space-lg": "1rem",
+          "space-sm": "0.5rem",
+          "space-xl": "1.5rem"
+        },
+        "fontFamily": {
+          "data-display-lg": ["JetBrains Mono"],
+          "data-display-md": ["JetBrains Mono"],
+          "label-caps": ["Inter"],
+          "headline-lg": ["Inter"],
+          "body-sm": ["Inter"],
+          "headline-md": ["Inter"],
+          "unit-label": ["JetBrains Mono"],
+          "body-md": ["Inter"],
+          "headline-xl": ["Inter"],
+          "data-mono-sm": ["JetBrains Mono"]
+        },
+        "fontSize": {
+          "data-display-lg": ["20px", {"lineHeight":"26px","letterSpacing":"-0.02em","fontWeight":"500"}],
+          "data-display-md": ["13px", {"lineHeight":"18px","fontWeight":"500"}],
+          "label-caps": ["10px", {"lineHeight":"12px","letterSpacing":"0.06em","fontWeight":"700"}],
+          "headline-lg": ["16px", {"lineHeight":"22px","letterSpacing":"-0.01em","fontWeight":"600"}],
+          "body-sm": ["11px", {"lineHeight":"16px","fontWeight":"400"}],
+          "headline-md": ["13px", {"lineHeight":"18px","letterSpacing":"-0.005em","fontWeight":"600"}],
+          "unit-label": ["10px", {"lineHeight":"14px","fontWeight":"400"}],
+          "body-md": ["13px", {"lineHeight":"18px","fontWeight":"400"}],
+          "headline-xl": ["22px", {"lineHeight":"28px","letterSpacing":"-0.02em","fontWeight":"600"}],
+          "data-mono-sm": ["11px", {"lineHeight":"14px","fontWeight":"400"}]
+        }
+      }
+    }
+  };
+</script></head><body class="bg-[#F0F5FA] font-body-sm text-body-sm text-text-primary antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-[#E8F0F8] border-r border-[#CBD9E8] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-14 px-space-md border-b border-[#CBD9E8] flex items-center justify-between bg-[#E0ECF6]"><div class="flex items-center gap-space-sm"><div class="w-7 h-7 rounded border border-[#CBD9E8] flex items-center justify-center bg-white shadow-xs"><span class="material-symbols-outlined text-primary text-[18px]">science</span></div><div><span class="font-headline-md text-headline-md text-text-primary tracking-tight block">CSTR Lab</span><span class="font-unit-label text-unit-label text-text-secondary block leading-none">v2.4-SciML</span></div></div><span class="px-space-xs py-0.5 rounded font-label-caps text-label-caps bg-white text-primary border border-[#CBD9E8] uppercase font-semibold">PROD</span></div><nav class="py-space-sm flex flex-col gap-0.5 px-space-xs"><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">grid_view</span><span class="font-body-md text-body-md">Overview</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="steady-state" href="#"><span class="material-symbols-outlined text-[18px]">balance</span><span class="font-body-md text-body-md">Steady-State Simulator</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="dynamic" href="#"><span class="material-symbols-outlined text-[18px]">timeline</span><span class="font-body-md text-body-md">Dynamic Simulation</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded bg-white text-primary font-medium shadow-xs border-l-2 border-primary" data-path="thermal" href="#"><span class="material-symbols-outlined text-[18px] text-primary">device_thermostat</span><span class="font-body-md text-body-md font-semibold text-primary">Thermal CSTR</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="sweeps" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-body-md text-body-md">Parameter Sweeps</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="experiments" href="#"><span class="material-symbols-outlined text-[18px]">experiment</span><span class="font-body-md text-body-md">Data &amp; Experiments</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="estimation" href="#"><span class="material-symbols-outlined text-[18px]">query_stats</span><span class="font-body-md text-body-md">Parameter Estimation</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="ml" href="#"><span class="material-symbols-outlined text-[18px]">hub</span><span class="font-body-md text-body-md">Machine Learning</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="history" href="#"><span class="material-symbols-outlined text-[18px]">history</span><span class="font-body-md text-body-md">Run History</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="reports" href="#"><span class="material-symbols-outlined text-[18px]">description</span><span class="font-body-md text-body-md">Reports &amp; Exports</span></a><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded text-text-secondary hover:bg-white/70 hover:text-text-primary transition-colors" data-path="status" href="#"><span class="material-symbols-outlined text-[18px]">monitor_heart</span><span class="font-body-md text-body-md">System Status</span></a></nav></div><div class="p-space-sm border-t border-[#CBD9E8] bg-[#E0ECF6] font-data-mono-sm text-data-mono-sm space-y-1.5"><div class="flex items-center justify-between"><span class="text-text-secondary text-[11px]">DAEMON</span><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-status-success animate-pulse"></span><span class="text-[11px] text-text-primary font-medium">127.0.0.1:8000</span></div></div><div class="flex items-center justify-between text-[11px]"><span class="text-text-secondary">LOCAL DB</span><span class="text-primary font-medium">SYNCED</span></div><div class="flex items-center justify-between text-[11px]"><span class="text-text-secondary">SOLVER</span><span class="text-amber-700 font-medium truncate max-w-[110px]">RK45/Grey-Box</span></div></div></aside><div class="pl-64 min-h-screen flex flex-col bg-[#F0F5FA]"><header class="fixed top-0 left-64 right-0 h-14 bg-white/95 backdrop-blur-sm border-b border-[#D5E1EE] z-40 flex items-center justify-between px-space-md shadow-[0_1px_2px_rgba(15,30,46,0.04)]"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs font-data-mono-sm text-data-mono-sm text-text-secondary"><span class="text-text-secondary font-medium">WS:</span><span class="text-text-primary font-semibold">Reactor Unit 01</span><span class="text-[#CBD9E8]">/</span><span class="text-primary font-medium">CSTR-Iso-04</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-0.5 rounded bg-[#F0F5FA] border border-[#CBD9E8] font-data-mono-sm text-unit-label text-text-secondary"><span>Core: FastODE 4.2</span><span class="text-[#CBD9E8]">|</span><span>Mem: 184MB</span></div><div class="flex items-center gap-1.5 px-space-xs py-0.5 rounded border border-[#CBD9E8] bg-[#F4F8FC] font-data-mono-sm text-unit-label text-text-primary"><span class="w-1.5 h-1.5 rounded-full bg-status-success"></span><span>Solvers Verified</span></div></div><div class="flex items-center gap-space-sm"><button class="flex items-center gap-1 px-space-sm py-1.5 rounded bg-primary text-white font-headline-md text-headline-md hover:bg-primary-container shadow-xs transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">add</span><span>New Simulation</span></button><button class="w-8 h-8 rounded border border-[#CBD9E8] bg-white flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-[#F4F8FC] transition-colors" title="Settings" type="button"><span class="material-symbols-outlined text-[18px]">settings</span></button><img alt="Profile" class="w-8 h-8 rounded-full object-cover border border-[#CBD9E8] ml-space-xs" src="https://lh3.googleusercontent.com/aida/AEtjO1UHzrFjKrN90hJLgyECXbnLfPy1cLk4FnwJ57geKC07vDEKFWPWpTWSS7pwxnGN_dTRGL-aBdphGR_Hds0E9JSXtMukHYDCJYrIGkunz2EoWUPUs2qPmwRlOoSR8Vqr5uyjIKg9513yHZy4faksiTECORGpX-jVkZdFBJxozFQzCLsdRNNsbsx4BCaF_4soR8RoQmL_V1gBQu7jdJjylDnvRejueTGDXBAjb3JhTMuY_6jFGGlkSAKMqQ"/></div></header><main class="relative pt-14 flex-1 w-full px-space-md py-space-md bg-[#F0F5FA]"><div class="flex flex-col w-full gap-space-md">
+<!-- Top Workspace Header Banner & Status Bar -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md bg-white p-space-md rounded-xl border border-[#D5E1EE] shadow-[0_1px_3px_rgba(15,30,46,0.04)]">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<h1 class="font-headline-lg text-headline-lg text-text-primary tracking-tight">Thermal Non-Isothermal CSTR</h1>
+<span class="px-1.5 py-0.5 rounded font-label-caps text-label-caps bg-[#E4EFFF] text-primary border border-[#C5DCFA]">SYS-THERM-ODE</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary">Coupled non-linear energy balance, Arrhenius kinetics, and cooling jacket dynamics</p>
+</div>
+<!-- Active Diagnostic Pill -->
+<div class="flex items-center gap-space-sm px-space-md py-1.5 rounded-lg bg-[#F0F6FC] border border-[#CBD9E8]">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">verified_user</span>
+<span class="font-body-md text-body-md text-text-primary font-medium">Coupled Mass &amp; Energy System Active</span>
+</div>
+<span class="text-[#CBD9E8]">|</span>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-status-success"></span>
+<span class="font-data-mono-sm text-data-mono-sm text-primary font-medium">Stable Thermal Regime (No Runaway Detected)</span>
+</div>
+</div>
+</div>
+<!-- Industrial Telemetry Overview KPIs -->
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-space-sm">
+<!-- Reactor Temp -->
+<div class="flex flex-col justify-between bg-white p-space-md rounded-lg border border-[#D5E1EE] shadow-[0_1px_2px_rgba(15,30,46,0.03)] hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">REACTOR TEMP [T]</span>
+<span class="material-symbols-outlined text-[16px] text-primary">thermostat</span>
+</div>
+<div class="my-1.5">
+<span class="font-data-display-lg text-data-display-lg text-primary tracking-tight" id="kpi-temp">338.4</span>
+<span class="font-unit-label text-unit-label text-text-secondary ml-0.5">K</span>
+</div>
+<div class="flex items-center justify-between font-unit-label text-unit-label pt-1 border-t border-[#E8EFF6] text-text-secondary">
+<span>Limit: 375.0 K</span>
+<span class="text-status-success font-medium">Margin: +36.6 K</span>
+</div>
+</div>
+<!-- Jacket Temp -->
+<div class="flex flex-col justify-between bg-white p-space-md rounded-lg border border-[#D5E1EE] shadow-[0_1px_2px_rgba(15,30,46,0.03)] hover:border-secondary/50 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">JACKET TEMP [T_j]</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">mode_heat_cool</span>
+</div>
+<div class="my-1.5">
+<span class="font-data-display-lg text-data-display-lg text-secondary tracking-tight" id="kpi-tj">298.2</span>
+<span class="font-unit-label text-unit-label text-text-secondary ml-0.5">K</span>
+</div>
+<div class="flex items-center justify-between font-unit-label text-unit-label pt-1 border-t border-[#E8EFF6] text-text-secondary">
+<span>Inlet: 290.0 K</span>
+<span class="text-secondary font-medium">ΔT: +8.2 K</span>
+</div>
+</div>
+<!-- Heat Generation -->
+<div class="flex flex-col justify-between bg-white p-space-md rounded-lg border border-[#D5E1EE] shadow-[0_1px_2px_rgba(15,30,46,0.03)] hover:border-amber-400 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">HEAT GEN [Q_gen]</span>
+<span class="material-symbols-outlined text-[16px] text-amber-600">local_fire_department</span>
+</div>
+<div class="my-1.5">
+<span class="font-data-display-lg text-data-display-lg text-amber-700 tracking-tight" id="kpi-qgen">48.2</span>
+<span class="font-unit-label text-unit-label text-text-secondary ml-0.5">kW</span>
+</div>
+<div class="flex items-center justify-between font-unit-label text-unit-label pt-1 border-t border-[#E8EFF6] text-text-secondary">
+<span>-ΔH_rxn · r_A · V</span>
+<span class="text-amber-700 font-medium">Exothermic</span>
+</div>
+</div>
+<!-- Heat Removal -->
+<div class="flex flex-col justify-between bg-white p-space-md rounded-lg border border-[#D5E1EE] shadow-[0_1px_2px_rgba(15,30,46,0.03)] hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">HEAT REMOVAL [Q_rem]</span>
+<span class="material-symbols-outlined text-[16px] text-primary">hvac</span>
+</div>
+<div class="my-1.5">
+<span class="font-data-display-lg text-data-display-lg text-primary tracking-tight" id="kpi-qrem">48.2</span>
+<span class="font-unit-label text-unit-label text-text-secondary ml-0.5">kW</span>
+</div>
+<div class="flex items-center justify-between font-unit-label text-unit-label pt-1 border-t border-[#E8EFF6] text-text-secondary">
+<span>Q_loss + Jacket</span>
+<span class="text-primary font-medium">Balanced (0.0 kW)</span>
+</div>
+</div>
+<!-- Bifurcation State -->
+<div class="flex flex-col justify-between bg-white p-space-md rounded-lg border border-[#D5E1EE] shadow-[0_1px_2px_rgba(15,30,46,0.03)] col-span-2 md:col-span-1 hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">BIFURCATION REGIME</span>
+<span class="material-symbols-outlined text-[16px] text-primary">grain</span>
+</div>
+<div class="my-1.5">
+<span class="font-headline-md text-headline-md text-text-primary block leading-tight">Single Stable State</span>
+<span class="font-unit-label text-unit-label text-text-secondary">Eigen: λ₁=-0.38, λ₂=-1.12</span>
+</div>
+<div class="flex items-center justify-between font-unit-label text-unit-label pt-1 border-t border-[#E8EFF6] text-text-secondary">
+<span>Hopf Margin: &gt; 12.4%</span>
+<span class="text-status-success font-medium">Subcritical</span>
+</div>
+</div>
+</div>
+<!-- Main Viewport: 2 Column Asymmetric Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<!-- Left Column: Thermal & Kinetic Parameter Racks (5 Cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<!-- Section A: Feed & Vessel Thermal Properties -->
+<div class="bg-white rounded-xl p-space-md border border-[#D5E1EE] shadow-[0_1px_3px_rgba(15,30,46,0.04)] flex flex-col gap-space-sm">
+<div class="flex items-center justify-between border-b border-[#E8EFF6] pb-2">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[16px]">inventory_2</span>
+<span class="font-headline-md text-headline-md text-text-primary">Feed &amp; Vessel Thermal Properties</span>
+</div>
+<span class="font-label-caps text-label-caps text-text-secondary bg-[#F0F5FA] px-1.5 py-0.5 rounded border border-[#CBD9E8]">SEC A</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">VESSEL VOLUME (V)</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium">500.0</span>
+<span class="font-unit-label text-unit-label text-text-secondary">L</span>
+</div>
+</div>
+<div class="flex flex-col bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">FEED TEMP (T_in)</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium">300.0</span>
+<span class="font-unit-label text-unit-label text-text-secondary">K</span>
+</div>
+</div>
+<div class="flex flex-col bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">DENSITY (ρ)</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium">1000.0</span>
+<span class="font-unit-label text-unit-label text-text-secondary">kg/m³</span>
+</div>
+</div>
+<div class="flex flex-col bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">HEAT CAPACITY (Cp)</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium">4.184</span>
+<span class="font-unit-label text-unit-label text-text-secondary">kJ/(kg·K)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section B: Arrhenius Kinetics & Reaction Heat -->
+<div class="bg-white rounded-xl p-space-md border border-[#D5E1EE] shadow-[0_1px_3px_rgba(15,30,46,0.04)] flex flex-col gap-space-sm">
+<div class="flex items-center justify-between border-b border-[#E8EFF6] pb-2">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-amber-600 text-[16px]">bubble_chart</span>
+<span class="font-headline-md text-headline-md text-text-primary">Arrhenius Kinetics &amp; Enthalpy</span>
+</div>
+<span class="font-label-caps text-label-caps text-text-secondary bg-[#F0F5FA] px-1.5 py-0.5 rounded border border-[#CBD9E8]">SEC B</span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between bg-[#F7FAFD] px-2.5 py-1.5 rounded border border-[#D5E1EE]">
+<span class="font-body-sm text-body-sm text-text-secondary">Pre-exponential (k₀)</span>
+<div class="flex items-center gap-1">
+<span class="font-data-mono-sm text-data-mono-sm text-primary font-medium">7.080 × 10¹⁰</span>
+<span class="font-unit-label text-unit-label text-text-secondary">min⁻¹</span>
+</div>
+</div>
+<div class="flex items-center justify-between bg-[#F7FAFD] px-2.5 py-1.5 rounded border border-[#D5E1EE]">
+<span class="font-body-sm text-body-sm text-text-secondary">Activation Energy (E_a)</span>
+<div class="flex items-center gap-1">
+<span class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium">69.70</span>
+<span class="font-unit-label text-unit-label text-text-secondary">kJ/mol</span>
+</div>
+</div>
+<div class="flex items-center justify-between bg-[#F7FAFD] px-2.5 py-1.5 rounded border border-[#D5E1EE]">
+<div class="flex items-center gap-1.5">
+<span class="font-body-sm text-body-sm text-text-secondary">Reaction Enthalpy (ΔH_rxn)</span>
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+</div>
+<div class="flex items-center gap-1">
+<span class="font-data-mono-sm text-data-mono-sm text-amber-700 font-medium">-84.50</span>
+<span class="font-unit-label text-unit-label text-text-secondary">kJ/mol</span>
+</div>
+</div>
+<div class="bg-[#EEF4FB] p-2 rounded text-text-secondary flex items-center justify-between font-unit-label text-unit-label border border-[#D5E1EE]">
+<span>Arrhenius Form: k(T) = k₀ · exp(-E_a / RT)</span>
+<span class="text-primary font-semibold">k(338.4K) = 0.128 min⁻¹</span>
+</div>
+</div>
+</div>
+<!-- Section C: Cooling Jacket & Heat Transfer -->
+<div class="bg-white rounded-xl p-space-md border border-[#D5E1EE] shadow-[0_1px_3px_rgba(15,30,46,0.04)] flex flex-col gap-space-sm">
+<div class="flex items-center justify-between border-b border-[#E8EFF6] pb-2">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[16px]">ac_unit</span>
+<span class="font-headline-md text-headline-md text-text-primary">Cooling Jacket Dynamics</span>
+</div>
+<span class="font-label-caps text-label-caps text-text-secondary bg-[#F0F5FA] px-1.5 py-0.5 rounded border border-[#CBD9E8]">SEC C</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<div class="flex flex-col bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">HEAT AREA (A_h)</span>
+<span class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium mt-0.5">3.50 <span class="font-unit-label text-unit-label text-text-secondary">m²</span></span>
+</div>
+<div class="flex flex-col bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">OVERALL HTC (U)</span>
+<span class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium mt-0.5">850.0 <span class="font-unit-label text-unit-label text-text-secondary">W/(m²·K)</span></span>
+</div>
+<div class="flex flex-col bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">JACKET VOL (V_j)</span>
+<span class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium mt-0.5">120.0 <span class="font-unit-label text-unit-label text-text-secondary">L</span></span>
+</div>
+<div class="flex flex-col bg-[#F7FAFD] p-2 rounded border border-[#D5E1EE]">
+<span class="font-label-caps text-label-caps text-text-secondary">COOLANT FLOW (F_j)</span>
+<div class="flex items-center justify-between mt-0.5">
+<span class="font-data-mono-sm text-data-mono-sm text-secondary font-medium">15.0</span>
+<span class="font-unit-label text-unit-label text-text-secondary">L/min</span>
+</div>
+</div>
+<div class="col-span-2 flex items-center justify-between bg-[#F7FAFD] px-2.5 py-1.5 rounded border border-[#D5E1EE]">
+<span class="font-body-sm text-body-sm text-text-secondary">Coolant Feed Temp (T_jin)</span>
+<span class="font-data-mono-sm text-data-mono-sm text-secondary font-medium">290.0 <span class="font-unit-label text-unit-label text-text-secondary">K</span></span>
+</div>
+</div>
+</div>
+<!-- Section D: Thermal Equations & ODE Invariants -->
+<div class="bg-white rounded-xl p-space-md border border-[#D5E1EE] shadow-[0_1px_3px_rgba(15,30,46,0.04)] flex flex-col gap-space-xs">
+<div class="flex items-center justify-between border-b border-[#E8EFF6] pb-2">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[16px]">functions</span>
+<span class="font-headline-md text-headline-md text-text-primary">Coupled Governing Equations</span>
+</div>
+<span class="font-label-caps text-label-caps text-text-secondary bg-[#F0F5FA] px-1.5 py-0.5 rounded border border-[#CBD9E8]">SEC D</span>
+</div>
+<div class="bg-[#F4F8FC] p-2.5 rounded font-data-mono-sm text-data-mono-sm space-y-2 border border-[#CBD9E8]">
+<div class="text-text-primary leading-relaxed">
+<span class="text-primary font-semibold">dT/dt</span> = 
+            <span class="text-text-secondary">(Q/V)</span>(T_in - T) + 
+            <span class="text-amber-700 font-medium">(-ΔH_rxn / ρ·Cp)</span>·r_A - 
+            <span class="text-secondary font-medium">(U·A_h / V·ρ·Cp)</span>·(T - T_j)
+          </div>
+<div class="text-text-primary leading-relaxed pt-1.5 border-t border-[#D5E1EE]">
+<span class="text-secondary font-semibold">dT_j/dt</span> = 
+            <span class="text-text-secondary">(F_j/V_j)</span>(T_jin - T_j) + 
+            <span class="text-primary font-medium">(U·A_h / V_j·ρ_j·Cp_j)</span>·(T - T_j)
+          </div>
+</div>
+</div>
+</div>
+<!-- Right Column: Telemetry Visualizations & Diagnostic Matrix (7 Cols) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Upper Chart: Reactor Temp T(t) vs Jacket Temp Tj(t) -->
+<div class="bg-white rounded-xl p-space-md border border-[#D5E1EE] shadow-[0_1px_3px_rgba(15,30,46,0.04)] flex flex-col">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-[#E8EFF6] gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">show_chart</span>
+<span class="font-headline-md text-headline-md text-text-primary">Reactor T(t) vs. Jacket T_j(t) Dynamics</span>
+</div>
+<!-- Legend Badges -->
+<div class="flex items-center gap-space-sm font-unit-label text-unit-label">
+<div class="flex items-center gap-1">
+<span class="w-2.5 h-0.5 bg-[#0284C7]"></span>
+<span class="text-text-primary font-medium">T (Reactor)</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2.5 h-0.5 bg-[#2563EB]"></span>
+<span class="text-text-primary font-medium">T_j (Jacket)</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2.5 h-0.5 border-b border-status-critical border-dashed"></span>
+<span class="text-status-critical font-medium">Safe Limit (375 K)</span>
+</div>
+</div>
+</div>
+<!-- SVG Chart Container -->
+<div class="relative w-full h-56 mt-space-sm bg-[#FAFCFF] rounded-lg border border-[#D5E1EE] overflow-hidden flex flex-col justify-end p-2" id="tempChartContainer">
+<!-- Background Axis Grid Lines -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 500 200">
+<defs>
+<lineargradient id="reactorGlowLight" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#0284C7" stop-opacity="0.18"></stop>
+<stop offset="100%" stop-color="#0284C7" stop-opacity="0.02"></stop>
+</lineargradient>
+</defs>
+<!-- Horizontal grid lines -->
+<line stroke="#E2E8F0" stroke-dasharray="2 2" stroke-width="1" x1="40" x2="480" y1="20" y2="20"></line>
+<line stroke="#E2E8F0" stroke-dasharray="2 2" stroke-width="1" x1="40" x2="480" y1="65" y2="65"></line>
+<line stroke="#E2E8F0" stroke-dasharray="2 2" stroke-width="1" x1="40" x2="480" y1="110" y2="110"></line>
+<line stroke="#E2E8F0" stroke-dasharray="2 2" stroke-width="1" x1="40" x2="480" y1="155" y2="155"></line>
+<!-- Safety Limit 375 K (y=35) -->
+<line opacity="0.85" stroke="#DC2626" stroke-dasharray="4 3" stroke-width="1.5" x1="40" x2="480" y1="35" y2="35"></line>
+<text fill="#DC2626" font-family="JetBrains Mono" font-size="9" font-weight="500" x="44" y="31">MAX SAFE T: 375.0 K</text>
+<!-- Jacket Temp Curve (starts 290K -> overshoot to 304K -> steady 298.2K) -->
+<path d="M 40,165 C 90,140 140,130 190,138 C 240,144 320,146 480,146" fill="none" stroke="#2563EB" stroke-width="2.2"></path>
+<!-- Reactor Temp Fill Glow -->
+<path d="M 40,145 C 90,55 140,68 190,82 C 240,94 320,95 480,95 L 480,185 L 40,185 Z" fill="url(#reactorGlowLight)"></path>
+<!-- Reactor Temp Curve (starts 300K -> thermal surge to 362K -> steady 338.4K) -->
+<path d="M 40,145 C 90,55 140,68 190,82 C 240,94 320,95 480,95" fill="none" stroke="#0284C7" stroke-width="2.5"></path>
+<!-- Cursor crosshair simulation / current point -->
+<circle cx="480" cy="95" fill="#0284C7" r="4" stroke="#ffffff" stroke-width="2"></circle>
+<circle cx="480" cy="146" fill="#2563EB" r="4" stroke="#ffffff" stroke-width="2"></circle>
+</svg>
+<!-- Y Axis Labels -->
+<div class="absolute left-1.5 top-1 bottom-6 flex flex-col justify-between font-unit-label text-unit-label text-text-secondary pointer-events-none">
+<span>380K</span>
+<span>350K</span>
+<span>320K</span>
+<span>290K</span>
+</div>
+<!-- X Axis Time Labels -->
+<div class="flex justify-between pl-8 pr-3 font-unit-label text-unit-label text-text-secondary pt-1 border-t border-[#D5E1EE]">
+<span>t = 0.0 min</span>
+<span>15.0 min</span>
+<span>30.0 min</span>
+<span>45.0 min</span>
+<span>60.0 min</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2 font-unit-label text-unit-label text-text-secondary">
+<span>ODE Solver: Runge-Kutta Cash-Karp Adaptive Step (Tolerance: 1e-6)</span>
+<span class="text-primary font-semibold">Equilibrium Settled at t = 28.4 min</span>
+</div>
+</div>
+<!-- Lower Chart: Reaction Rate r_A(t) and Reactant Concentration C_A(t) -->
+<div class="bg-white rounded-xl p-space-md border border-[#D5E1EE] shadow-[0_1px_3px_rgba(15,30,46,0.04)] flex flex-col">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-[#E8EFF6] gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-amber-600 text-[18px]">water_ec</span>
+<span class="font-headline-md text-headline-md text-text-primary">Reaction Rate r_A(t) &amp; Reactant Conc C_A(t)</span>
+</div>
+<div class="flex items-center gap-space-sm font-unit-label text-unit-label">
+<div class="flex items-center gap-1">
+<span class="w-2.5 h-0.5 bg-amber-600"></span>
+<span class="text-text-primary font-medium">r_A [mol/(L·min)]</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2.5 h-0.5 border-b border-primary border-dashed"></span>
+<span class="text-text-primary font-medium">C_A [mol/L]</span>
+</div>
+</div>
+</div>
+<!-- SVG Dual Trajectory -->
+<div class="relative w-full h-44 mt-space-sm bg-[#FAFCFF] rounded-lg border border-[#D5E1EE] overflow-hidden flex flex-col justify-end p-2">
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 500 150">
+<!-- Grid Lines -->
+<line stroke="#E2E8F0" stroke-dasharray="2 2" stroke-width="1" x1="40" x2="480" y1="20" y2="20"></line>
+<line stroke="#E2E8F0" stroke-dasharray="2 2" stroke-width="1" x1="40" x2="480" y1="65" y2="65"></line>
+<line stroke="#E2E8F0" stroke-dasharray="2 2" stroke-width="1" x1="40" x2="480" y1="110" y2="110"></line>
+<!-- Concentration C_A Curve (starts at 1.0 mol/L -> depletes to 0.18 mol/L) -->
+<path d="M 40,30 C 90,85 140,110 190,115 C 240,118 320,118 480,118" fill="none" stroke="#0284C7" stroke-dasharray="4 2" stroke-width="2.2"></path>
+<!-- Reaction Rate r_A Curve (peaks during initial thermal excursion, then plateaus) -->
+<path d="M 40,120 C 85,25 140,65 190,82 C 240,90 320,92 480,92" fill="none" stroke="#D97706" stroke-width="2.4"></path>
+<!-- End Markers -->
+<circle cx="480" cy="118" fill="#0284C7" r="3.5" stroke="#ffffff" stroke-width="1.5"></circle>
+<circle cx="480" cy="92" fill="#D97706" r="3.5" stroke="#ffffff" stroke-width="1.5"></circle>
+</svg>
+<!-- Y Axis Labels -->
+<div class="absolute left-1.5 top-1 bottom-6 flex flex-col justify-between font-unit-label text-unit-label text-text-secondary pointer-events-none">
+<span>1.0 / 0.50</span>
+<span>0.5 / 0.25</span>
+<span>0.0 / 0.00</span>
+</div>
+<!-- X Axis Time Labels -->
+<div class="flex justify-between pl-8 pr-3 font-unit-label text-unit-label text-text-secondary pt-1 border-t border-[#D5E1EE]">
+<span>t = 0.0 min</span>
+<span>15.0 min</span>
+<span>30.0 min</span>
+<span>45.0 min</span>
+<span>60.0 min</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-sm mt-space-sm pt-2 border-t border-[#E8EFF6] font-unit-label text-unit-label">
+<div class="flex items-center justify-between bg-[#F7FAFD] px-2 py-1 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary">Steady Conversion X_A:</span>
+<span class="text-primary font-semibold font-data-mono-sm">82.1 %</span>
+</div>
+<div class="flex items-center justify-between bg-[#F7FAFD] px-2 py-1 rounded border border-[#D5E1EE]">
+<span class="text-text-secondary">Peak Rate (r_A max):</span>
+<span class="text-amber-700 font-semibold font-data-mono-sm">0.442 mol/(L·min)</span>
+</div>
+</div>
+</div>
+<!-- Thermal Runaway Diagnostic Matrix Card -->
+<div class="bg-white rounded-xl p-space-md border border-[#D5E1EE] shadow-[0_1px_3px_rgba(15,30,46,0.04)] flex flex-col gap-space-sm">
+<div class="flex items-center justify-between border-b border-[#E8EFF6] pb-2">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">security</span>
+<span class="font-headline-md text-headline-md text-text-primary">Thermal Runaway Diagnostic Matrix</span>
+</div>
+<!-- Status Badge -->
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#EBF7F0] border border-[#A6E1BA] font-label-caps text-label-caps text-[#047857]">
+<span class="w-1.5 h-1.5 rounded-full bg-status-success"></span>
+<span>VERIFIED STABLE</span>
+</div>
+</div>
+<!-- Semenov & Parametric Analysis Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Criteria 1: Semenov Criterion -->
+<div class="flex flex-col bg-[#F7FAFD] p-space-sm rounded-lg border border-[#D5E1EE] gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">SEMENOV CRITERION</span>
+<span class="font-unit-label text-unit-label text-status-success font-semibold">PASS</span>
+</div>
+<div class="font-data-mono-sm text-data-mono-sm text-text-primary font-medium">
+              dQ_gen/dT &lt; dQ_rem/dT
+            </div>
+<div class="flex items-center justify-between font-unit-label text-unit-label text-text-secondary mt-1 pt-1 border-t border-[#D5E1EE]">
+<span>Heat Gen Slope: 1.24 kW/K</span>
+<span>Heat Rem Slope: 2.85 kW/K</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary text-[11px] leading-tight">
+              Removal curve slope strictly dominates exothermic generation. Thermal runaway cannot nucleate under current coolant envelope.
+            </p>
+</div>
+<!-- Criteria 2: Parametric Sensitivity -->
+<div class="flex flex-col bg-[#F7FAFD] p-space-sm rounded-lg border border-[#D5E1EE] gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-text-secondary">PARAMETRIC SENSITIVITY</span>
+<span class="font-unit-label text-unit-label text-secondary font-semibold">NOMINAL</span>
+</div>
+<div class="font-data-mono-sm text-data-mono-sm text-secondary font-medium">
+              dT / dT_in = 1.18
+            </div>
+<div class="flex items-center justify-between font-unit-label text-unit-label text-text-secondary mt-1 pt-1 border-t border-[#D5E1EE]">
+<span>Crit Threshold: 4.50</span>
+<span>Jacket Gain: -0.42 K/(L/min)</span>
+</div>
+<p class="font-body-sm text-body-sm text-text-secondary text-[11px] leading-tight">
+              Linearized thermal Jacobian yields strictly negative real eigenvalues, confirming robust attenuation of inlet thermal shocks.
+            </p>
+</div>
+</div>
+<!-- Operator Action Toolbar -->
+<div class="flex items-center justify-between pt-1 border-t border-[#E8EFF6] font-unit-label text-unit-label">
+<div class="flex items-center gap-space-xs text-text-secondary">
+<span class="material-symbols-outlined text-[16px] text-text-secondary">history_toggle_off</span>
+<span>Real-time safety cycle: 250ms update</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1 rounded bg-[#F0F5FA] hover:bg-[#E4EDF6] text-text-primary transition-colors flex items-center gap-1 border border-[#CBD9E8] font-medium" id="btn-recompute" type="button">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+<span>Recompute Fixed Points</span>
+</button>
+<button class="px-space-sm py-1 rounded bg-primary text-white font-medium hover:bg-primary-container shadow-xs transition-colors flex items-center gap-1" id="btn-export" type="button">
+<span class="material-symbols-outlined text-[14px]">download</span>
+<span>Export ODE Trajectory</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Simple micro-interaction for recompute & export buttons
+  document.getElementById('btn-recompute')?.addEventListener('click', function() {
+    const kpiTemp = document.getElementById('kpi-temp');
+    if (kpiTemp) {
+      kpiTemp.classList.add('opacity-50');
+      setTimeout(() => {
+        kpiTemp.innerText = (338.4 + (Math.random() * 0.4 - 0.2)).toFixed(1);
+        kpiTemp.classList.remove('opacity-50');
+      }, 300);
+    }
+  });
+
+  document.getElementById('btn-export')?.addEventListener('click', function() {
+    const originalText = this.innerHTML;
+    this.innerHTML = '<span class="material-symbols-outlined text-[14px]">check</span><span>Exported CSV</span>';
+    setTimeout(() => {
+      this.innerHTML = originalText;
+    }, 1800);
+  });
+</script></main></div></body></html>

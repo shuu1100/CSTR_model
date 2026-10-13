@@ -12,13 +12,23 @@ import { DynamicCharts } from '../components/PlotlyChart';
 import { ResultsPanel } from '../components/ResultsPanel';
 import { SimulationForm } from '../components/SimulationForm';
 
-export const SimulatorPage: React.FC = () => {
-  const [mode, setMode] = useState<'steady' | 'dynamic'>('dynamic');
+interface SimulatorPageProps {
+  initialMode?: 'steady' | 'dynamic';
+}
+
+export const SimulatorPage: React.FC<SimulatorPageProps> = ({ initialMode = 'dynamic' }) => {
+  const [mode, setMode] = useState<'steady' | 'dynamic'>(initialMode);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [steadyResult, setSteadyResult] = useState<SteadyStateResponse | null>(null);
   const [dynamicResult, setDynamicResult] = useState<DynamicSimulationResponse | null>(null);
+
+  useEffect(() => {
+    if (initialMode) {
+      setMode(initialMode);
+    }
+  }, [initialMode]);
 
   // Initial load: automatically execute canonical oracle simulation
   useEffect(() => {
@@ -126,16 +136,16 @@ export const SimulatorPage: React.FC = () => {
 
           {/* Steady State Explanatory Card (in steady mode) */}
           {mode === 'steady' && steadyResult && (
-            <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-6 backdrop-blur-md shadow-xl">
-              <h3 className="text-base font-semibold text-white mb-2">Steady-State Regime Summary</h3>
-              <p className="text-xs text-slate-300 leading-relaxed mb-4">
+            <div className="workstation-card">
+              <h3 className="text-sm font-bold text-[#0F1E2E] mb-1">Steady-State Regime Summary</h3>
+              <p className="text-xs text-[#4E657E] leading-relaxed mb-3">
                 In steady-state continuous operation (dC_A/dt = 0), fluid convective inflow, outflow, and reaction consumption maintain exact algebraic equilibrium inside the vessel.
               </p>
-              <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 font-mono text-xs text-emerald-400 space-y-1">
-                <div>Residence Time (τ): {steadyResult.outputs.tau.toFixed(4)} min</div>
-                <div>Steady-State Reactant Conc. (C_A,ss): {steadyResult.outputs.C_A_ss.toFixed(4)} mol/L</div>
-                <div>Fractional Conversion (X_A): {steadyResult.outputs.conversion !== null ? `${(steadyResult.outputs.conversion * 100).toFixed(2)}%` : 'Undefined (C_A,in = 0)'}</div>
-                <div>Material Balance Residual: {steadyResult.outputs.residual.toExponential(3)} mol/(L·min)</div>
+              <div className="bg-[#F0F5FA] p-3 rounded border border-[#CBD9E8] font-mono text-xs text-[#0F1E2E] space-y-1">
+                <div>Residence Time (τ): <span className="font-semibold text-primary">{steadyResult.outputs.tau.toFixed(4)} min</span></div>
+                <div>Steady-State Reactant Conc. (C_A,ss): <span className="font-semibold text-[#0F1E2E]">{steadyResult.outputs.C_A_ss.toFixed(4)} mol/L</span></div>
+                <div>Fractional Conversion (X_A): <span className="font-semibold text-emerald-700">{steadyResult.outputs.conversion !== null ? `${(steadyResult.outputs.conversion * 100).toFixed(2)}%` : 'Undefined (C_A,in = 0)'}</span></div>
+                <div>Material Balance Residual: <span className="font-semibold text-[#4E657E]">{steadyResult.outputs.residual.toExponential(3)} mol/(L·min)</span></div>
               </div>
             </div>
           )}

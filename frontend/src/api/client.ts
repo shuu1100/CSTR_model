@@ -24,6 +24,15 @@ import {
   MLModelCatalogItem,
   MLTrainingRequest,
   MLTrainingResponse,
+  ThermalSimulationRequest,
+  ThermalSimulationResponse,
+  PRBSAuditResponse,
+  PRBSCalibrationResponse,
+  HistoryRunItem,
+  HistoryRunDetail,
+  CompareRunsResponse,
+  RetentionResponse,
+  OptimizationAuditResponse,
 } from "./types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8001";
 
@@ -83,6 +92,10 @@ export const api = {
     return handleResponse<SteadyStateResponse>(res);
   },
 
+  async solveSteadyState(req: SteadyStateRequest): Promise<SteadyStateResponse> {
+    return this.runSteadyState(req);
+  },
+
   async runDynamicSimulation(req: DynamicSimulationRequest): Promise<DynamicSimulationResponse> {
     const res = await fetch(`${API_BASE_URL}/api/v1/simulations/dynamic`, {
       method: "POST",
@@ -90,6 +103,10 @@ export const api = {
       body: JSON.stringify(req),
     });
     return handleResponse<DynamicSimulationResponse>(res);
+  },
+
+  async simulateDynamic(req: DynamicSimulationRequest): Promise<DynamicSimulationResponse> {
+    return this.runDynamicSimulation(req);
   },
 
   async runParameterSweep(
@@ -203,5 +220,86 @@ export const api = {
     });
     return handleResponse<{ job_id: string; status: string; message: string }>(res);
   },
+
+  // --- Thermal CSTR Simulations & PRBS ---
+  async simulateThermal(req: ThermalSimulationRequest): Promise<ThermalSimulationResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/simulations/thermal`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req),
+    });
+    return handleResponse<ThermalSimulationResponse>(res);
+  },
+
+  async getThermalPRBSAudit(): Promise<PRBSAuditResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/simulations/thermal/prbs-audit`);
+    return handleResponse<PRBSAuditResponse>(res);
+  },
+
+  async calibrateThermalPRBS(): Promise<PRBSCalibrationResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/simulations/thermal/prbs-calibration`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    return handleResponse<PRBSCalibrationResponse>(res);
+  },
+
+  // --- Run History, Comparison & Exports ---
+  async listHistoryRuns(runType?: string, limit: number = 50, offset: number = 0): Promise<HistoryRunItem[]> {
+    let url = `${API_BASE_URL}/api/v1/history/runs?limit=${limit}&offset=${offset}`;
+    if (runType) url += `&run_type=${encodeURIComponent(runType)}`;
+    const res = await fetch(url);
+    return handleResponse<HistoryRunItem[]>(res);
+  },
+
+  async getHistoryRun(runId: string): Promise<HistoryRunDetail> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/history/runs/${encodeURIComponent(runId)}`);
+    return handleResponse<HistoryRunDetail>(res);
+  },
+
+  async deleteHistoryRun(runId: string): Promise<void> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/history/runs/${encodeURIComponent(runId)}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      throw new ApiError(res.status, `Failed to delete run: ${res.statusText}`);
+    }
+  },
+
+  async compareHistoryRuns(runIds: string[]): Promise<CompareRunsResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/history/compare`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ run_ids: runIds }),
+    });
+    return handleResponse<CompareRunsResponse>(res);
+  },
+
+  async applyRetentionPolicy(maxRuns: number = 500, retentionDays?: number): Promise<RetentionResponse> {
+    let url = `${API_BASE_URL}/api/v1/history/retention/apply?max_runs=${maxRuns}`;
+    if (retentionDays) url += `&retention_days=${retentionDays}`;
+    const res = await fetch(url, { method: "POST" });
+    return handleResponse<RetentionResponse>(res);
+  },
+
+  getExportHistoryUrl(format: "json" | "csv" | "xlsx", runType?: string): string {
+    let url = `${API_BASE_URL}/api/v1/history/export?format=${format}`;
+    if (runType) url += `&run_type=${encodeURIComponent(runType)}`;
+    return url;
+  },
+
+  // --- Optimization & Latency Benchmarks ---
+  async getOptimizationAudit(): Promise<OptimizationAuditResponse> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/ml/optimization/audit`);
+    return handleResponse<OptimizationAuditResponse>(res);
+  },
+
+  async benchmarkOptimization(nRuns: number = 50, nPoints: number = 41): Promise<{ status: string; benchmark: any }> {
+    const res = await fetch(`${API_BASE_URL}/api/v1/ml/optimization/benchmark?n_runs=${nRuns}&n_points=${nPoints}`, {
+      method: "POST",
+    });
+    return handleResponse<{ status: string; benchmark: any }>(res);
+  },
 };
+
 

@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import Plot from 'react-plotly.js';
 import { DynamicSimulationResponse } from '../api/types';
 
+export const PlotlyChart = Plot;
+
 interface DynamicChartsProps {
   data: DynamicSimulationResponse;
 }
