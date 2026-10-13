@@ -29,6 +29,10 @@ class SimulationRunRecord(Base):
         index=True,
     )
     provenance: Mapped[str] = mapped_column(String(64), default="SIMULATED")
+    schema_version: Mapped[str] = mapped_column(String(16), default="1.0")
+    artifact_ref: Mapped[Optional[str]] = mapped_column(String(256), nullable=True)
+    seed: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    split_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
 
     # JSON-encoded blobs
     parameters_json: Mapped[str] = mapped_column(Text, default="{}")

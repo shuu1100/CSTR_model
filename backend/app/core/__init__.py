@@ -78,6 +78,14 @@ from backend.app.core.thermal import (
     arrhenius_rate_constant,
     simulate_thermal_cstr,
 )
+from backend.app.core.prbs_thermal import (
+    PRBSAuditReport,
+    assert_cannot_validate_concentration_on_prbs,
+    calibrate_and_evaluate_prbs_thermal,
+    load_and_audit_prbs_dataset,
+    split_prbs_blocked_chronology,
+)
+
 
 __all__ = [
     # Units
@@ -144,6 +152,13 @@ __all__ = [
     "ThermalCSTRConfig",
     "ThermalSimulationResult",
     "simulate_thermal_cstr",
+    # PRBS Thermal Dataset Governance & Calibration
+    "PRBSAuditReport",
+    "load_and_audit_prbs_dataset",
+    "split_prbs_blocked_chronology",
+    "calibrate_and_evaluate_prbs_thermal",
+    "assert_cannot_validate_concentration_on_prbs",
 ]
+
 
 

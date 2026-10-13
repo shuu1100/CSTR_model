@@ -6,6 +6,7 @@ Adheres strictly to GLOBAL-INSTRUCTIONS.md, phase-12, and phase-08A:
 - Clean error responses and route validation.
 """
 
+from datetime import datetime
 from typing import Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from pydantic import BaseModel, Field
@@ -13,10 +14,12 @@ from sqlalchemy.orm import Session
 
 from backend.app.db.database import get_db, init_db
 from backend.app.db.service import (
+    apply_retention_policy,
     compare_runs,
     delete_simulation_run,
     export_runs_to_csv,
     export_runs_to_json,
+    export_runs_to_xlsx,
     get_simulation_run,
     list_simulation_runs,
     record_simulation_run,
@@ -31,13 +34,17 @@ router = APIRouter(prefix="/history", tags=["History & Persistence"])
 class SaveRunRequest(BaseModel):
     """Payload for manually archiving a simulation or fit result."""
 
-    run_type: str = Field(description="Run category: 'steady_state', 'dynamic', 'sweep', 'ml_forecast'")
+    run_type: str = Field(description="Run category: 'steady_state', 'dynamic', 'sweep', 'ml_forecast', 'estimation'")
     name: Optional[str] = Field(default=None, description="Human-readable run name")
     parameters: dict[str, Any] = Field(description="Operating parameters")
     results_summary: dict[str, Any] = Field(description="Summary metrics or steady-state outputs")
     time_series: Optional[dict[str, Any]] = Field(default=None, description="Time series coordinates")
     provenance: str = Field(default="SIMULATED", description="Data provenance label")
     metadata: Optional[dict[str, Any]] = Field(default=None, description="Additional context")
+    schema_version: str = Field(default="1.0", description="Schema version identifier")
+    artifact_ref: Optional[str] = Field(default=None, description="Path or URI to saved model / artifact")
+    seed: Optional[int] = Field(default=None, description="Random seed used in stochastic training")
+    split_id: Optional[str] = Field(default=None, description="Dataset split partition identifier")
 
 
 class CompareRunsRequest(BaseModel):
@@ -84,6 +91,10 @@ def create_run(
         time_series=req.time_series,
         provenance=req.provenance,
         metadata=req.metadata,
+        schema_version=req.schema_version,
+        artifact_ref=req.artifact_ref,
+        seed=req.seed,
+        split_id=req.split_id,
     )
     return {
         "id": record.id,
@@ -91,6 +102,10 @@ def create_run(
         "run_type": record.run_type,
         "created_at": record.created_at.isoformat(),
         "provenance": record.provenance,
+        "schema_version": record.schema_version,
+        "artifact_ref": record.artifact_ref,
+        "seed": record.seed,
+        "split_id": record.split_id,
     }
 
 
@@ -112,6 +127,10 @@ def get_run(
         "run_type": record.run_type,
         "created_at": record.created_at.isoformat(),
         "provenance": record.provenance,
+        "schema_version": getattr(record, "schema_version", "1.0"),
+        "artifact_ref": getattr(record, "artifact_ref", None),
+        "seed": getattr(record, "seed", None),
+        "split_id": getattr(record, "split_id", None),
         "parameters": record.get_parameters(),
         "results_summary": record.get_results_summary(),
         "time_series": record.get_time_series(),
@@ -150,22 +169,47 @@ def compare_history_runs(
 
 @router.get("/export")
 def export_history(
-    format: str = Query("json", pattern="^(json|csv)$", description="Export format: 'json' or 'csv'"),
+    format: str = Query("json", pattern="^(json|csv|xlsx)$", description="Export format: 'json', 'csv', or 'xlsx'"),
     run_ids: Optional[list[str]] = Query(None, description="Optional specific run IDs to export"),
+    run_type: Optional[str] = Query(None, description="Optional run_type filter"),
+    date_from: Optional[datetime] = Query(None, description="Optional start datetime ISO filter"),
+    date_to: Optional[datetime] = Query(None, description="Optional end datetime ISO filter"),
     db: Session = Depends(get_db),
 ) -> Response:
-    """Export historical simulation runs in CSV or JSON format."""
+    """Export historical simulation runs in CSV, JSON, or multi-sheet XLSX format."""
     if format == "csv":
-        content = export_runs_to_csv(db, run_ids)
+        content = export_runs_to_csv(db, run_ids=run_ids, run_type=run_type, date_from=date_from, date_to=date_to)
         return Response(
             content=content,
             media_type="text/csv",
             headers={"Content-Disposition": "attachment; filename=cstr_simulation_history.csv"},
         )
+    elif format == "xlsx":
+        content = export_runs_to_xlsx(db, run_ids=run_ids, run_type=run_type, date_from=date_from, date_to=date_to)
+        return Response(
+            content=content,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=cstr_simulation_history.xlsx"},
+        )
     else:
-        content = export_runs_to_json(db, run_ids)
+        content = export_runs_to_json(db, run_ids=run_ids, run_type=run_type, date_from=date_from, date_to=date_to)
         return Response(
             content=content,
             media_type="application/json",
             headers={"Content-Disposition": "attachment; filename=cstr_simulation_history.json"},
         )
+
+
+@router.post("/retention/apply")
+def enforce_retention(
+    max_runs: int = Query(500, ge=1, le=10000, description="Maximum historical runs to retain"),
+    retention_days: Optional[int] = Query(None, ge=1, description="Purge runs older than this number of days"),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """Apply data retention policy by purging older runs beyond count or age threshold."""
+    purged = apply_retention_policy(db, max_runs=max_runs, retention_days=retention_days)
+    return {
+        "status": "success",
+        "purged_count": purged,
+        "message": f"Successfully purged {purged} historical simulation run(s).",
+    }

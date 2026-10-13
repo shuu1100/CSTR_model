@@ -35,8 +35,26 @@ class Base(DeclarativeBase):
 
 
 def init_db() -> None:
-    """Initialize all database tables defined on Base."""
+    """Initialize all database tables defined on Base and apply lightweight migrations."""
     Base.metadata.create_all(bind=engine)
+    if "sqlite" in settings.database_url:
+        with engine.connect() as conn:
+            try:
+                from sqlalchemy import text
+                result = conn.execute(text("PRAGMA table_info(simulation_runs)"))
+                cols = {row[1] for row in result.fetchall()}
+                if cols:
+                    if "schema_version" not in cols:
+                        conn.execute(text("ALTER TABLE simulation_runs ADD COLUMN schema_version VARCHAR(16) DEFAULT '1.0'"))
+                    if "artifact_ref" not in cols:
+                        conn.execute(text("ALTER TABLE simulation_runs ADD COLUMN artifact_ref VARCHAR(256)"))
+                    if "seed" not in cols:
+                        conn.execute(text("ALTER TABLE simulation_runs ADD COLUMN seed INTEGER"))
+                    if "split_id" not in cols:
+                        conn.execute(text("ALTER TABLE simulation_runs ADD COLUMN split_id VARCHAR(64)"))
+                    conn.commit()
+            except Exception:
+                pass
 
 
 def get_db() -> Generator[Session, None, None]:

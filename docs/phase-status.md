@@ -17,8 +17,8 @@
 | **Phase 9** | **Baselines & Neural ODE** | **COMPLETED** | 16 tests passing (`test_baselines_and_neural_ode.py`) | PyTorch RK4 grey-box ($R^2 > 0.93$), mechanistic & naive baselines benchmark report. |
 | **Phase 10** | **Physics-Informed Neural Networks** | **COMPLETED** | 12 tests passing (`test_pinn.py`) | Autograd CSTR mole balance collocation residual loss, non-negative concentration projection, training-only normalizer, validation tuning, multi-seed benchmarks. |
 | **Phase 11** | **ML API & Training UI** | **COMPLETED** | 13 tests passing (`test_ml_api.py`) | FastAPI ML endpoints `/api/v1/ml/*`, dataset preview/validation, thread-pooled async jobs, cancellation, 95% uncertainty intervals, and 4-tab `MachineLearningPage.tsx`. |
-| **Phase 12** | **Run History & State Export** | **COMPLETED** | 10 tests passing (`test_persistence_and_export.py`) | SQLite run persistence, CSV/JSON session export, multi-run comparison overlay. |
-| **Phase 13** | **Arrhenius & Thermal CSTR** | **COMPLETED** | 8 tests passing (`test_thermal_cstr.py`) | Coupled energy balance, jacket cooling dynamics, thermal runaway detection; candidate data audited. |
+| **Phase 12** | **Run History & State Export** | **COMPLETED** | 16 tests passing (`test_persistence_and_export.py`) | SQLite run persistence with schema versioning and artifact tracking, multi-sheet XLSX, CSV, JSON exports, side-by-side run comparison, and automated retention policy. |
+| **Phase 13** | **Arrhenius & Thermal CSTR** | **COMPLETED** | 14 tests passing (`test_thermal_cstr.py`) | Arrhenius kinetics, coupled jacket energy balances, isothermal mode recovery, thermal runaway detection, PRBS workbook signal mappings, blocked chronological split, thermal calibration, and concentration validation guard. |
 | **Phase 14** | **Optional ONNX Runtime & Benchmark** | **COMPLETED** | 2 tests passing (`test_onnx_optimization.py`) | Native PyTorch latency benchmarked (~35-50 ms), offline zero-dependency architecture preserved. |
 | **Phase 15** | **Scientific QA, Regression & Release** | **COMPLETED** | 6 regression tests passing (`test_phase15_qa_release_regression.py`) | Complete end-to-end regression test suite, zero-leakage verification, quarantine integrity locked. |
 
@@ -28,7 +28,7 @@
 
 - **Python Version:** 3.14.6
 - **Test Framework:** pytest 9.1.1
-- **Backend Test Suite:** `pytest backend/tests` -> **222 passed in 48.2s**
+- **Backend Test Suite:** `pytest backend/tests` -> **234 passed in 56.5s (100% pass rate)**
 - **Frontend Build:** `npm run build` -> **0 errors, Vite production bundle generated**
 - **Frontend Unit Tests:** `npm test` -> **4 passed (100% pass rate)**
 - **Blockers Resolved During Roadmap:**

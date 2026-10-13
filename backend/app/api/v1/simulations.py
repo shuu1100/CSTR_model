@@ -11,6 +11,10 @@ from backend.app.core.sweeps import (
     compute_lhs_parameter_sweep,
 )
 from backend.app.core.thermal import ThermalCSTRConfig, simulate_thermal_cstr
+from backend.app.core.prbs_thermal import (
+    calibrate_and_evaluate_prbs_thermal,
+    load_and_audit_prbs_dataset,
+)
 from backend.app.schemas.simulation import (
     DynamicSimulationRequest,
     DynamicSimulationResponse,
@@ -338,4 +342,41 @@ def compute_thermal_simulation(request: ThermalSimulationRequest) -> ThermalSimu
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(exc),
         ) from exc
+
+
+@router.get("/thermal/prbs-audit")
+def get_prbs_thermal_audit() -> dict[str, Any]:
+    """Retrieve compatibility review, signal mappings, and data governance for PRBS thermal dataset."""
+    try:
+        _, report = load_and_audit_prbs_dataset()
+        return {
+            "status": "success",
+            "filepath": report.filepath,
+            "row_count": report.row_count,
+            "column_count": report.column_count,
+            "dt_seconds": report.dt_seconds,
+            "time_span_seconds": report.time_span_seconds,
+            "missing_values_count": report.missing_values_count,
+            "signal_mappings": report.signal_mappings,
+            "excitation_identifiability": report.excitation_identifiability,
+            "scientific_governance_notice": report.scientific_governance_notice,
+        }
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"PRBS audit error: {str(exc)}",
+        ) from exc
+
+
+@router.post("/thermal/prbs-calibration")
+def calibrate_prbs_thermal_model() -> dict[str, Any]:
+    """Calibrate thermal jacket-reactor energy parameters on 60% calibration split and return locked test residuals."""
+    try:
+        return calibrate_and_evaluate_prbs_thermal()
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"PRBS calibration error: {str(exc)}",
+        ) from exc
+
 

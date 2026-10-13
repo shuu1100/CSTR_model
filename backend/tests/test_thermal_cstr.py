@@ -143,3 +143,74 @@ class TestThermalAPIEndpoint:
         }
         res = client.post("/api/v1/simulations/thermal", json=payload)
         assert res.status_code == 422
+
+    def test_thermal_api_prbs_audit(self) -> None:
+        res = client.get("/api/v1/simulations/thermal/prbs-audit")
+        assert res.status_code == 200
+        data = res.json()
+        assert data["status"] == "success"
+        assert data["row_count"] >= 3000
+        assert data["dt_seconds"] == pytest.approx(0.5, abs=1e-3)
+        assert "reactor_temp_k" in data["signal_mappings"]
+        assert "validate kinetic concentration" in data["scientific_governance_notice"].lower()
+
+    def test_thermal_api_prbs_calibration(self) -> None:
+        res = client.post("/api/v1/simulations/thermal/prbs-calibration")
+        assert res.status_code == 200
+        data = res.json()
+        assert data["status"] == "success"
+        assert "k_jacket_per_s" in data["calibrated_parameters"]
+        assert "derivative_rmse_k_per_s" in data["locked_test_metrics"]
+        assert data["scientific_data_governance"]["concentration_validated"] is False
+
+
+class TestPRBSThermalAuditAndCalibration:
+    """Tests for experimental PRBS workbook ingestion, signal mappings, and thermal calibration."""
+
+    def test_prbs_workbook_audit_and_signal_mapping(self) -> None:
+        from backend.app.core.prbs_thermal import load_and_audit_prbs_dataset
+
+        df, report = load_and_audit_prbs_dataset()
+        assert len(df) >= 3000
+        assert report.missing_values_count == 0
+        assert report.dt_seconds == pytest.approx(0.5, abs=1e-3)
+        # Check verified Kelvin temperatures
+        assert all(df["reactor_temp_k"] > 273.15)
+        assert all(df["jacket_temp_k"] > 273.15)
+        assert all(df["feed_inlet_temp_k"] > 273.15)
+        # Check identifiability
+        assert report.excitation_identifiability["is_sufficiently_excited"] is True
+
+    def test_prbs_blocked_chronology_split(self) -> None:
+        from backend.app.core.prbs_thermal import load_and_audit_prbs_dataset, split_prbs_blocked_chronology
+
+        df, _ = load_and_audit_prbs_dataset()
+        cal, val, test = split_prbs_blocked_chronology(df, cal_ratio=0.6, val_ratio=0.2, test_ratio=0.2)
+
+        assert len(cal) + len(val) + len(test) == len(df)
+        # Strictly chronological without overlap
+        assert cal["time_s"].max() < val["time_s"].min()
+        assert val["time_s"].max() < test["time_s"].min()
+
+    def test_prbs_thermal_calibration_and_locked_test(self) -> None:
+        from backend.app.core.prbs_thermal import calibrate_and_evaluate_prbs_thermal
+
+        results = calibrate_and_evaluate_prbs_thermal()
+        assert results["status"] == "success"
+
+        # Valid heat transfer parameters
+        params = results["calibrated_parameters"]
+        assert params["k_jacket_per_s"] > 0.0
+
+        # Physical residuals evaluated on locked test split
+        test_metrics = results["locked_test_metrics"]
+        assert test_metrics["derivative_rmse_k_per_s"] < 1.0  # Stable gradient fit
+        assert abs(test_metrics["derivative_mean_residual_k_per_s"]) < 0.1  # Zero systematic drift
+        assert test_metrics["temperature_1step_rmse_k"] < 0.5  # Accurate 1-step prediction
+
+    def test_prbs_temperature_only_cannot_validate_concentration(self) -> None:
+        from backend.app.core.prbs_thermal import assert_cannot_validate_concentration_on_prbs
+
+        with pytest.raises(ValueError, match="Temperature-only data cannot validate concentration"):
+            assert_cannot_validate_concentration_on_prbs()
+
