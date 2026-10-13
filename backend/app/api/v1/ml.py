@@ -29,6 +29,10 @@ from backend.app.ml.neural_ode import (
     train_grey_box_neural_ode,
 )
 from backend.app.ml.pinn import CSTRPINN, train_cstr_pinn
+from backend.app.ml.onnx_optimization import (
+    benchmark_pytorch_grey_box_latency,
+    full_optimization_audit,
+)
 from backend.app.schemas.ml import (
     MLDatasetPreviewResponse,
     MLDatasetValidationResponse,
@@ -640,3 +644,36 @@ def predict_trajectory(request: MLInferenceRequest) -> MLInferenceResponse:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Unsupported model_type '{request.model_type}'.",
         )
+
+
+@router.get("/optimization/audit")
+def get_optimization_audit() -> dict[str, Any]:
+    """Retrieve Phase 14 ONNX optimization audit, latency benchmarks, regime stability, and fallback decision."""
+    try:
+        return full_optimization_audit(n_runs=30)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Optimization audit error: {str(exc)}",
+        ) from exc
+
+
+@router.post("/optimization/benchmark")
+def run_latency_benchmark(
+    n_runs: int = Query(50, ge=5, le=500, description="Number of benchmark evaluation trajectories"),
+    n_points: int = Query(41, ge=10, le=200, description="Evaluation grid points per trajectory"),
+) -> dict[str, Any]:
+    """Benchmark raw CPU inference speed and memory footprint of the Grey-Box Neural ODE model."""
+    try:
+        from dataclasses import asdict
+        res = benchmark_pytorch_grey_box_latency(n_runs=n_runs, n_points=n_points)
+        return {
+            "status": "success",
+            "benchmark": asdict(res),
+        }
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Benchmark execution error: {str(exc)}",
+        ) from exc
+
