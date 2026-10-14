@@ -1,4 +1,4 @@
-# CSTR Lab — Digital Twin & Scientific Machine Learning Platform
+# CSTR Lab — Scientific Machine Learning Platform
 
 CSTR Lab is an offline-capable, high-fidelity scientific computing, simulation, and machine learning platform for Continuous Stirred-Tank Reactors (CSTR). It combines first-principles mechanistic differential equation solvers, non-isothermal thermal dynamics, non-linear parameter estimation, interactive telemetry, and scientific ML architectures (Grey-Box Neural ODEs and Physics-Informed Neural Networks).
 
